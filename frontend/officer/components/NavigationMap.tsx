@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Navigation, MapPin } from "lucide-react";
+import { Navigation as NavIcon, MapPin } from "lucide-react";
 
 interface NavigationMapProps {
   complaintLat: number;
@@ -43,7 +43,7 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
       <div className="flex items-center justify-between border-b border-slate-50 pb-3">
         <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Live GPS Navigation</h4>
         <span className="text-xs font-black text-slate-800 flex items-center gap-1">
-          <Navigation className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+          <NavIcon className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
           <span>{distance.toFixed(1)} km remaining</span>
         </span>
       </div>

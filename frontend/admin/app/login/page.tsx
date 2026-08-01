@@ -25,8 +25,8 @@ export default function LoginPage() {
 
   const handleGetOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length < 10) {
-      setErrorMsg("Please enter a valid 10-digit mobile number.");
+    if (phone.length < 10 || phone.startsWith("0")) {
+      setErrorMsg("Please enter a valid 10-digit mobile number (cannot start with 0).");
       return;
     }
     setErrorMsg("");
@@ -87,7 +87,7 @@ export default function LoginPage() {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").replace(/^0+/, ""))}
                 maxLength={10}
                 placeholder="Enter 10-digit credentials"
                 className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-2xl text-sm font-semibold text-white focus:outline-none focus:border-blue-500 transition"

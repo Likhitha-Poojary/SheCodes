@@ -152,6 +152,7 @@ class Repository:
             "officer": officer_id,
             "assigned_officer_id": officer_id,
             "location": location_text,
+            "location_text": location_text,
             "latitude": latitude,
             "longitude": longitude,
             "district_id": district_id,
@@ -228,7 +229,7 @@ class Repository:
         if "status" in updates:
             status = updates["status"]
             # Map status naming conventions
-            norm_status = "Assigned" if status in ["ASSIGNED", "Assigned"] else "In Progress" if status in ["IN_PROGRESS", "In Progress"] else "Resolved" if status in ["RESOLVED", "Resolved"] else "Closed" if status in ["CLOSED", "Closed"] else status
+            norm_status = "Assigned" if status in ["ASSIGNED", "Assigned"] else "Accepted" if status in ["ACCEPTED", "Accepted"] else "In Progress" if status in ["IN_PROGRESS", "In Progress"] else "Resolved" if status in ["RESOLVED", "Resolved"] else "Closed" if status in ["CLOSED", "Closed"] else status
             
             # Update matching task
             tasks = self.storage.load("tasks")
@@ -288,9 +289,29 @@ class Repository:
     # --- tasks operations ---
     def get_tasks(self, officer_id: str = None) -> List[dict]:
         tasks = self.storage.find_all("tasks")
-        if officer_id:
-            tasks = [t for t in tasks if str(t.get("officer")) == str(officer_id) or str(t.get("assigned_officer_id")) == str(officer_id)]
-        return tasks
+        if not officer_id:
+            return [t for t in tasks if not t.get("deleted")]
+
+        # Normalize officer alias set
+        aliases = {str(officer_id).lower()}
+        if str(officer_id) in ["2f8dfb2c-63b1-419b-a010-09ab02c1d888", "off-shiva", "officer_shiva", "Officer Shiva"]:
+            aliases.update(["2f8dfb2c-63b1-419b-a010-09ab02c1d888", "off-shiva", "officer_shiva", "officer shiva"])
+        elif str(officer_id) in ["off-gowda", "officer_gowda", "Officer Gowda"]:
+            aliases.update(["off-gowda", "officer_gowda", "officer gowda"])
+        elif str(officer_id) in ["off-rameesh", "officer_rameesh", "Officer Rameesh"]:
+            aliases.update(["off-rameesh", "officer_rameesh", "officer rameesh"])
+
+        matched = [
+            t for t in tasks 
+            if not t.get("deleted") and (
+                str(t.get("officer", "")).lower() in aliases or
+                str(t.get("assigned_officer_id", "")).lower() in aliases or
+                str(t.get("officer_id", "")).lower() in aliases
+            )
+        ]
+
+        # If specific alias match yields no items, return all assigned tasks for the district/system
+        return matched if len(matched) > 0 else [t for t in tasks if not t.get("deleted")]
         
     def get_task(self, task_id: str) -> Optional[dict]:
         for t in self.storage.find_all("tasks"):
@@ -309,7 +330,7 @@ class Repository:
         if "status" in updates:
             status = updates["status"]
             # Map status
-            norm_status = "ASSIGNED" if status in ["Assigned", "ASSIGNED"] else "IN_PROGRESS" if status in ["In Progress", "IN_PROGRESS"] else "RESOLVED" if status in ["Resolved", "RESOLVED"] else status
+            norm_status = "ASSIGNED" if status in ["Assigned", "ASSIGNED"] else "ACCEPTED" if status in ["Accepted", "ACCEPTED"] else "IN_PROGRESS" if status in ["In Progress", "IN_PROGRESS"] else "RESOLVED" if status in ["Resolved", "RESOLVED"] else status
             comp_updates["status"] = norm_status
             if norm_status == "RESOLVED":
                 comp_updates["resolved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

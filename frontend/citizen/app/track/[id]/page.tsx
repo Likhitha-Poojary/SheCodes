@@ -36,7 +36,7 @@ export default function TrackGrievance() {
     });
   }, [id, districtId, fetchGrievanceById, verifySession, router]);
 
-  if (isLoading || !activeGrievance) {
+  if (isLoading) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center p-6 text-center text-gray-500 font-semibold text-sm">
         <div className="w-10 h-10 border-4 border-t-blue-600 border-gray-100 rounded-full animate-spin mb-4" />
@@ -45,7 +45,25 @@ export default function TrackGrievance() {
     );
   }
 
-  const slaDate = new Date(activeGrievance.sla_deadline).toLocaleDateString();
+  if (!activeGrievance) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-4">
+        <h3 className="text-xl font-bold text-slate-800">Grievance Ticket Loaded</h3>
+        <p className="text-sm text-slate-500">
+          The requested ticket details could not be found or have been archived.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-2xl shadow hover:bg-blue-700 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Return to Dashboard</span>
+        </Link>
+      </div>
+    );
+  }
+
+  const slaDate = activeGrievance.sla_deadline ? new Date(activeGrievance.sla_deadline).toLocaleDateString() : "Within 48 Hours";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
