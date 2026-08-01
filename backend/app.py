@@ -152,6 +152,8 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     all_comps = repo.get_complaints()
     duplicate_record = ai.find_duplicate(req.description, all_comps)
     is_duplicate = duplicate_record is not None
+    validation["duplicate"] = is_duplicate
+    validation["duplicate_id"] = duplicate_record["id"] if is_duplicate else None
 
     # 3. Save complaint using repository (Created as PENDING/SUBMITTED until Admin assigns an officer)
     comp = repo.create_complaint(
