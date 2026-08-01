@@ -1,0 +1,82 @@
+[
+  {
+    "id": "dept-bbmp",
+    "name": "BBMP Civic Infrastructure",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 92.5,
+    "avg_sla_hours": 36.0
+  },
+  {
+    "id": "dept-bwssb",
+    "name": "BWSSB Water & Sewage",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 88.0,
+    "avg_sla_hours": 24.0
+  },
+  {
+    "id": "dept-bescom",
+    "name": "BESCOM Power Distribution",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 95.0,
+    "avg_sla_hours": 12.0
+  },
+  {
+    "id": "dept-police",
+    "name": "Karnataka Police Traffic Division",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 91.0,
+    "avg_sla_hours": 8.0
+  },
+  {
+    "id": "dept-emergency",
+    "name": "Disaster Response Force (KSNDMC)",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 98.0,
+    "avg_sla_hours": 4.0
+  },
+  {
+    "id": "dept-ksrtc",
+    "name": "KSRTC Public Transport",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 85.0,
+    "avg_sla_hours": 48.0
+  },
+  {
+    "id": "dept-health",
+    "name": "Municipal Health & Sanitation",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 90.0,
+    "avg_sla_hours": 72.0
+  },
+  {
+    "id": "dept-fire",
+    "name": "Karnataka Fire & Emergency Services",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 99.0,
+    "avg_sla_hours": 2.0
+  },
+  {
+    "id": "dept-pwd",
+    "name": "State Public Works Department",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 80.0,
+    "avg_sla_hours": 120.0
+  },
+  {
+    "id": "dept-forest",
+    "name": "Karnataka Forest & Environment",
+    "total_complaints": 0,
+    "pending": 0,
+    "resolution_rate": 87.0,
+    "avg_sla_hours": 96.0
+  }
+]

@@ -1,0 +1,826 @@
+[
+  {
+    "id": "9c8dfb2c-63b1-419b-a010-09ab02c1d9b3",
+    "username": "citizen_9876543210",
+    "phone": "9876543210",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "username": "officer_shiva",
+    "phone": "9876543211",
+    "role": "FIELD_OFFICER",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "username": "admin_department_head",
+    "phone": "9876543212",
+    "role": "DEPT_HEAD",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-000",
+    "username": "likhitha_poojary",
+    "phone": "9876543300",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-001",
+    "username": "karan_desai",
+    "phone": "9876543301",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-002",
+    "username": "rohan_kamath",
+    "phone": "9876543302",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-003",
+    "username": "pranav_karanth",
+    "phone": "9876543303",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-004",
+    "username": "sneha_shenoy",
+    "phone": "9876543304",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-005",
+    "username": "varun_shenoy",
+    "phone": "9876543305",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-006",
+    "username": "tejas_shenoy",
+    "phone": "9876543306",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-007",
+    "username": "divya_karanth",
+    "phone": "9876543307",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-008",
+    "username": "amit_desai",
+    "phone": "9876543308",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-009",
+    "username": "divya_shenoy",
+    "phone": "9876543309",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-010",
+    "username": "divya_karanth",
+    "phone": "9876543310",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-011",
+    "username": "amit_desai",
+    "phone": "9876543311",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-012",
+    "username": "prajwal_shetty",
+    "phone": "9876543312",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-013",
+    "username": "karan_poojary",
+    "phone": "9876543313",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-014",
+    "username": "rohan_bhat",
+    "phone": "9876543314",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-015",
+    "username": "pranav_shenoy",
+    "phone": "9876543315",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-016",
+    "username": "sneha_kamath",
+    "phone": "9876543316",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-017",
+    "username": "divya_bhat",
+    "phone": "9876543317",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-018",
+    "username": "karan_poojary",
+    "phone": "9876543318",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-019",
+    "username": "karan_shetty",
+    "phone": "9876543319",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-020",
+    "username": "prajwal_gowda",
+    "phone": "9876543320",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-021",
+    "username": "sneha_gowda",
+    "phone": "9876543321",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-022",
+    "username": "prajwal_kamath",
+    "phone": "9876543322",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-023",
+    "username": "sneha_gowda",
+    "phone": "9876543323",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-024",
+    "username": "varun_bhat",
+    "phone": "9876543324",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-025",
+    "username": "prajwal_bhat",
+    "phone": "9876543325",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-026",
+    "username": "megha_kamath",
+    "phone": "9876543326",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-027",
+    "username": "likhitha_bhat",
+    "phone": "9876543327",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-028",
+    "username": "tejas_bhat",
+    "phone": "9876543328",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-029",
+    "username": "divya_kamath",
+    "phone": "9876543329",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-030",
+    "username": "pranav_karanth",
+    "phone": "9876543330",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-031",
+    "username": "pranav_shetty",
+    "phone": "9876543331",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-032",
+    "username": "pooja_poojary",
+    "phone": "9876543332",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-033",
+    "username": "megha_shenoy",
+    "phone": "9876543333",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-034",
+    "username": "likhitha_poojary",
+    "phone": "9876543334",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-035",
+    "username": "pooja_kamath",
+    "phone": "9876543335",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-036",
+    "username": "megha_gowda",
+    "phone": "9876543336",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-037",
+    "username": "pooja_desai",
+    "phone": "9876543337",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-038",
+    "username": "sneha_desai",
+    "phone": "9876543338",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-039",
+    "username": "divya_desai",
+    "phone": "9876543339",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-040",
+    "username": "divya_karanth",
+    "phone": "9876543340",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-041",
+    "username": "karan_shenoy",
+    "phone": "9876543341",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-042",
+    "username": "tejas_karanth",
+    "phone": "9876543342",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-043",
+    "username": "prajwal_kamath",
+    "phone": "9876543343",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-044",
+    "username": "likhitha_desai",
+    "phone": "9876543344",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-045",
+    "username": "sneha_karanth",
+    "phone": "9876543345",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-046",
+    "username": "pranav_desai",
+    "phone": "9876543346",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-047",
+    "username": "pooja_desai",
+    "phone": "9876543347",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-048",
+    "username": "tejas_shetty",
+    "phone": "9876543348",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-049",
+    "username": "varun_kamath",
+    "phone": "9876543349",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-050",
+    "username": "varun_desai",
+    "phone": "9876543350",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-051",
+    "username": "pranav_karanth",
+    "phone": "9876543351",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-052",
+    "username": "varun_kamath",
+    "phone": "9876543352",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-053",
+    "username": "prajwal_gowda",
+    "phone": "9876543353",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-054",
+    "username": "karan_kamath",
+    "phone": "9876543354",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-055",
+    "username": "prajwal_shenoy",
+    "phone": "9876543355",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-056",
+    "username": "rohan_bhat",
+    "phone": "9876543356",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-057",
+    "username": "tejas_desai",
+    "phone": "9876543357",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-058",
+    "username": "pooja_poojary",
+    "phone": "9876543358",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-059",
+    "username": "prajwal_shetty",
+    "phone": "9876543359",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-060",
+    "username": "pranav_poojary",
+    "phone": "9876543360",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-061",
+    "username": "karan_desai",
+    "phone": "9876543361",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-062",
+    "username": "tejas_shenoy",
+    "phone": "9876543362",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-063",
+    "username": "pranav_karanth",
+    "phone": "9876543363",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-064",
+    "username": "megha_poojary",
+    "phone": "9876543364",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-065",
+    "username": "karan_gowda",
+    "phone": "9876543365",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-066",
+    "username": "likhitha_gowda",
+    "phone": "9876543366",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-067",
+    "username": "prajwal_kamath",
+    "phone": "9876543367",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-068",
+    "username": "prajwal_desai",
+    "phone": "9876543368",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-069",
+    "username": "amit_kamath",
+    "phone": "9876543369",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-070",
+    "username": "amit_desai",
+    "phone": "9876543370",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-071",
+    "username": "varun_shetty",
+    "phone": "9876543371",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-072",
+    "username": "pooja_desai",
+    "phone": "9876543372",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-073",
+    "username": "pooja_desai",
+    "phone": "9876543373",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-074",
+    "username": "divya_desai",
+    "phone": "9876543374",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-075",
+    "username": "pooja_karanth",
+    "phone": "9876543375",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-076",
+    "username": "varun_gowda",
+    "phone": "9876543376",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-077",
+    "username": "sneha_shenoy",
+    "phone": "9876543377",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-078",
+    "username": "varun_bhat",
+    "phone": "9876543378",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-079",
+    "username": "varun_gowda",
+    "phone": "9876543379",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-080",
+    "username": "prajwal_shenoy",
+    "phone": "9876543380",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-081",
+    "username": "sneha_gowda",
+    "phone": "9876543381",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-082",
+    "username": "pooja_poojary",
+    "phone": "9876543382",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-083",
+    "username": "prajwal_shetty",
+    "phone": "9876543383",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-084",
+    "username": "prajwal_shenoy",
+    "phone": "9876543384",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-085",
+    "username": "sneha_desai",
+    "phone": "9876543385",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-086",
+    "username": "likhitha_desai",
+    "phone": "9876543386",
+    "role": "CITIZEN",
+    "district_id": 253,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-087",
+    "username": "amit_shetty",
+    "phone": "9876543387",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-088",
+    "username": "sneha_poojary",
+    "phone": "9876543388",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-089",
+    "username": "varun_desai",
+    "phone": "9876543389",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-090",
+    "username": "sneha_poojary",
+    "phone": "9876543390",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-091",
+    "username": "karan_poojary",
+    "phone": "9876543391",
+    "role": "CITIZEN",
+    "district_id": 252,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-092",
+    "username": "likhitha_shenoy",
+    "phone": "9876543392",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-093",
+    "username": "prajwal_shetty",
+    "phone": "9876543393",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-094",
+    "username": "pooja_bhat",
+    "phone": "9876543394",
+    "role": "CITIZEN",
+    "district_id": 254,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-095",
+    "username": "rohan_bhat",
+    "phone": "9876543395",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-096",
+    "username": "karan_poojary",
+    "phone": "9876543396",
+    "role": "CITIZEN",
+    "district_id": 255,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-097",
+    "username": "tejas_kamath",
+    "phone": "9876543397",
+    "role": "CITIZEN",
+    "district_id": 251,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-098",
+    "username": "varun_desai",
+    "phone": "9876543398",
+    "role": "CITIZEN",
+    "district_id": 256,
+    "deleted": false
+  },
+  {
+    "id": "usr-gen-099",
+    "username": "megha_bhat",
+    "phone": "9876543399",
+    "role": "CITIZEN",
+    "district_id": 250,
+    "deleted": false
+  }
+]

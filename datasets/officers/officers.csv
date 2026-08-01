@@ -1,0 +1,9 @@
+officer_id,name,department,district,latitude,longitude,availability
+OFF-BLR-001,Shiva Gowda,dept-bbmp,250,12.9780,77.5940,ACTIVE
+OFF-BLR-002,Manjunath K,dept-bwssb,250,12.9712,77.6105,ACTIVE
+OFF-BLR-003,Ramesh Kumar,dept-bescom,250,12.9250,77.6500,ACTIVE
+OFF-BLR-004,Suresh N,dept-police,250,12.9350,77.6200,ACTIVE
+OFF-BLR-005,Anand Rao,dept-emergency,250,12.9800,77.6000,ACTIVE
+OFF-MYS-001,Kiran Gowda,dept-bbmp,252,12.3100,76.6500,ACTIVE
+OFF-MNG-001,Devendra P,dept-emergency,253,12.8700,74.8400,ACTIVE
+OFF-HUB-001,Veeresh M,dept-bescom,254,15.3500,75.1400,ACTIVE

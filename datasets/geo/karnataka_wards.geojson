@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ward_id": 45,
+        "name": "Malleshwaram",
+        "district_id": 250
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.56, 12.99],
+            [77.58, 12.99],
+            [77.58, 13.01],
+            [77.56, 13.01],
+            [77.56, 12.99]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ward_id": 150,
+        "name": "Bellandur",
+        "district_id": 250
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.65, 12.92],
+            [77.68, 12.92],
+            [77.68, 12.94],
+            [77.65, 12.94],
+            [77.65, 12.92]
+          ]
+        ]
+      }
+    }
+  ]
+}

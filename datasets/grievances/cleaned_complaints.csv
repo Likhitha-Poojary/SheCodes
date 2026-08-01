@@ -1,0 +1,11 @@
+complaint_id,description,category,department,district_id,latitude,longitude,priority,status,created_at,severity_score
+KA-BLR-0001,Large water pipe leak on MG Road outside Metro station,WATER_PIPE_LEAK,dept-bwssb,250,12.9754,77.6062,HIGH,SUBMITTED,2026-08-01 10:00:00,80
+KA-BLR-0002,Pothole near HSR Layout Sector 3 causing traffic delays,ROAD_POTHOLE,dept-bbmp,250,12.9105,77.645,MEDIUM,ASSIGNED,2026-08-01 09:30:00,50
+KA-BLR-0003,Garbage piled up near Indiranagar 100ft road garbage bin,GARBAGE_DUMP,dept-bbmp,250,12.9719,77.6411,LOW,SUBMITTED,2026-08-01 11:15:00,50
+KA-MYS-0001,Streetlight out on Devaraja Market Road causing darkness,STREETLIGHT_OUT,dept-bescom,252,12.3086,76.6528,LOW,RESOLVED,2026-07-31 20:00:00,50
+KA-MNG-0001,Waterlogging and flood near Hampankatta crossing after rain,WATERLOGGING,dept-emergency,253,12.8698,74.843,HIGH,SUBMITTED,2026-08-01 12:00:00,80
+KA-BLR-0004,Open sewer overflow near Koramangala 4th block,SEWER_OVERFLOW,dept-bwssb,250,12.9312,77.6224,HIGH,ASSIGNED,2026-08-01 08:00:00,50
+KA-BLR-0005,Damaged road divider on Outer Ring Road near Bellandur,ROAD_DAMAGE,dept-bbmp,250,12.9304,77.6784,MEDIUM,SUBMITTED,2026-08-01 09:00:00,50
+KA-HUB-0001,Transformer sparks near Hubli Railway Station yard,ELECTRICAL_SPARKS,dept-bescom,254,15.3524,75.1479,HIGH,SUBMITTED,2026-08-01 13:45:00,50
+KA-BEL-0001,Garbage dumping near Belagavi Fort entrance wall,GARBAGE_DUMP,dept-bbmp,255,15.8569,74.5218,LOW,SUBMITTED,2026-08-01 14:10:00,50
+KA-BLR-0006,Major pipeline burst outside BWSSB pumping station,WATER_PIPE_LEAK,dept-bwssb,250,12.9592,77.5735,HIGH,SUBMITTED,2026-08-01 14:30:00,80
