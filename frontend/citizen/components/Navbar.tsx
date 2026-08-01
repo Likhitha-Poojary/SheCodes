@@ -20,7 +20,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="w-full px-6 h-16 flex items-center justify-between">
         
         {/* Brand logo */}
         <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-1.5 p-2 text-xs font-bold text-gray-600 border border-gray-100 hover:bg-gray-50 rounded-xl"
           >
             <Globe className="w-4 h-4 text-gray-400" />
-            <span>{language === "en" ? "ಕನ್ನಡ" : "English"}</span>
+            <span>{language === "en" ? "English" : "ಕನ್ನಡ"}</span>
           </button>
 
           {isAuthenticated && (
@@ -86,15 +86,7 @@ export const Navbar: React.FC = () => {
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full"></span>
               </button>
 
-              {/* Profile card link */}
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded-xl border border-gray-100"
-              >
-                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
-                  {user?.username?.[0]?.toUpperCase() || "C"}
-                </div>
-              </Link>
+
 
               {/* Logout button */}
               <button

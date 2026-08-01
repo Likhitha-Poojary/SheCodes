@@ -223,16 +223,21 @@ export default function TaskDetails() {
 
         </div>
 
-        {/* Right Sidebar Column (Navigation Map & Logs) */}
-        <div className="space-y-6">
-          
-          {/* Geolocation Live GIS Navigation */}
-          {currentStatus !== "RESOLVED" && (
-            <NavigationMap
-              complaintLat={activeTask.latitude || 12.9716}
-              complaintLon={activeTask.longitude || 77.5946}
-            />
-          )}
+      {/* AI Triage diagnostics */}
+      <AIInsightCard
+        confidence={activeTask.ai_confidence}
+        severity={activeTask.severity}
+        recommendedAction="Locate pipe burst on-site. Shut off main supply line valve. Repair pipeline leak. Inspect walking path cleanups."
+        aiAnalysis={(activeTask as any).ai_analysis}
+      />
+
+      {/* Geolocation navigation */}
+      {currentStatus !== "RESOLVED" && (
+        <NavigationMap
+          complaintLat={activeTask.latitude}
+          complaintLon={activeTask.longitude}
+        />
+      )}
 
           {/* Operational Audit History Logs */}
           <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-4">

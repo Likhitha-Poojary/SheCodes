@@ -20,7 +20,7 @@ export const Sidebar: React.FC = () => {
     <aside className="w-64 bg-slate-900 text-white min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between flex-shrink-0">
       <div className="space-y-6">
         <span className="text-xs font-mono font-bold text-slate-400 tracking-wider uppercase px-4 block">
-          Citizen Operations
+          {t("sidebar.operations")}
         </span>
 
         <nav className="space-y-1">
@@ -49,8 +49,8 @@ export const Sidebar: React.FC = () => {
         <div className="flex gap-2.5 text-xs text-slate-400 font-semibold leading-relaxed">
           <ShieldAlert className="w-5 h-5 text-indigo-400 flex-shrink-0" />
           <div>
-            <span className="text-white block font-bold mb-0.5">Secure Session</span>
-            Data runs over encrypted TLS 1.3 endpoints.
+            <span className="text-white block font-bold mb-0.5">{t("sidebar.secure_session")}</span>
+            {t("sidebar.secure_desc")}
           </div>
         </div>
       </div>
