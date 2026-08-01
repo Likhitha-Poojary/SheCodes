@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { useGrievanceStore } from "../store/useGrievanceStore";
 import { useAuthStore } from "../store/useAuthStore";
 
-const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws/grievances";
+const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/grievances";
 
 export const RealTimeStatusProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const socketRef = useRef<WebSocket | null>(null);
