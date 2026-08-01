@@ -11,7 +11,11 @@ Write-Host "Launching CityMind AI Karnataka services..." -ForegroundColor Cyan
 # 1. Start Consolidated Backend (Port 8080)
 Write-Host "Starting Consolidated Backend (Port 8080)..." -ForegroundColor Green
 $api = [PowerShell]::Create()
+<<<<<<< Updated upstream
 [void]$api.AddScript("cd `"c:\Users\Megha Kulal\SheCodes\backend`" ; python -m uvicorn app:app --host 0.0.0.0 --port 8080")
+=======
+[void]$api.AddScript("cd '$PSScriptRoot\backend' ; python -m uvicorn app:app --host 0.0.0.0 --port 8080 --reload")
+>>>>>>> Stashed changes
 $apiResult = $api.BeginInvoke()
 
 # 2. Start Citizen Portal (Port 3001)

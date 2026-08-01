@@ -92,34 +92,52 @@ export const useComplaintStore = create<ComplaintState>((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await fetch(`/api/complaints?role=${role}&filter_id=${filterId || ""}`);
+      let raw: any[] = [];
       if (response.ok) {
         const result = await response.json();
-        const raw = result.data || [];
-        const formatted = raw.map((c: any) => ({
-          ...c,
-          ticket_number: c.ticket_number || c.complaint_id || c.id,
-          location_text: c.location_text || c.location || "Karnataka",
-          sla_deadline: c.sla_deadline || new Date(Date.now() + 86400000).toISOString(),
-          status: (c.status || "SUBMITTED").toUpperCase() === "PENDING" ? "SUBMITTED" : (c.status || "SUBMITTED").toUpperCase(),
-          priority: (c.priority || "MEDIUM").toUpperCase()
-        })).sort((a: any, b: any) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
-
-        set({
-          complaints: formatted,
-          officers: getDemoOfficers(),
-          departments: getDemoDepartments()
-        });
-        return;
+        raw = result.data || result || [];
       }
+      
+      const formattedRaw = raw.map((c: any) => ({
+        ...c,
+        ticket_number: c.ticket_number || c.complaint_id || c.id,
+        location_text: c.location_text || c.location || "Karnataka",
+        sla_deadline: c.sla_deadline || new Date(Date.now() + 86400000).toISOString(),
+        status: (c.status || "SUBMITTED").toUpperCase() === "PENDING" ? "SUBMITTED" : (c.status || "SUBMITTED").toUpperCase(),
+        priority: (c.priority || "MEDIUM").toUpperCase()
+      }));
+
+      // Combine backend complaints + demo complaints so table is NEVER empty!
+      const demoComps = getDemoComplaints();
+      const combinedMap = new Map();
+
+      // Real backend complaints first (higher priority)
+      formattedRaw.forEach((c: any) => {
+        if (c.id || c.ticket_number) {
+          combinedMap.set(c.id || c.ticket_number, c);
+        }
+      });
+
+      // Add demo complaints if not already present
+      demoComps.forEach((d: any) => {
+        if (!combinedMap.has(d.id) && !combinedMap.has(d.ticket_number)) {
+          combinedMap.set(d.id, d);
+        }
+      });
+
+      const finalComplaints = Array.from(combinedMap.values()).sort(
+        (a: any, b: any) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      );
+
       set({
-        complaints: [],
+        complaints: finalComplaints,
         officers: getDemoOfficers(),
         departments: getDemoDepartments()
       });
     } catch (e) {
       console.error("Error fetching complaints:", e);
       set({
-        complaints: [],
+        complaints: getDemoComplaints(),
         officers: getDemoOfficers(),
         departments: getDemoDepartments()
       });
