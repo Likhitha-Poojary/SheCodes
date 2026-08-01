@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8085";
+const SECONDARY_BACKEND = "http://127.0.0.1:8080";
+
+async function safeFetchBackend(url: string, options: RequestInit) {
+  try {
+    const resp = await fetch(url, options);
+    if (resp.ok) return resp;
+  } catch (e) {
+    // Try secondary backend
+  }
+  const altUrl = url.replace("localhost:8080", "127.0.0.1:8080");
+  return await fetch(altUrl, options);
+}
 
 export async function GET(
   request: NextRequest,

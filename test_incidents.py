@@ -1,7 +1,7 @@
 import requests
 import time
 
-BASE_URL = "http://localhost:8080"
+BASE_URL = "http://localhost:8085"
 
 def login(phone, role):
     res = requests.post(f"{BASE_URL}/login", json={"phone": phone, "role": role})

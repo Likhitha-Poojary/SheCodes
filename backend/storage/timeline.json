@@ -15027,5 +15027,19 @@
     "event": "Officer Assigned",
     "timestamp": "2026-08-01 21:27:44",
     "deleted": false
+  },
+  {
+    "id": "a7a1affc-faef-44e3-bbe8-7425ee530f52",
+    "complaint_id": "CMP064719",
+    "event": "Complaint Submitted",
+    "timestamp": "2026-08-02 03:14:07",
+    "deleted": false
+  },
+  {
+    "id": "f209b8a1-bebc-4209-bbc8-37ec362db44a",
+    "complaint_id": "CMP064719",
+    "event": "Officer Assigned",
+    "timestamp": "2026-08-02 03:14:07",
+    "deleted": false
   }
 ]

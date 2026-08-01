@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const PRIMARY_BACKEND = process.env.BACKEND_URL || "http://localhost:8080";
+const PRIMARY_BACKEND = process.env.BACKEND_URL || "http://localhost:8085";
 const SECONDARY_BACKEND = "http://127.0.0.1:8080";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-karnataka-citymind-key-18273";
 

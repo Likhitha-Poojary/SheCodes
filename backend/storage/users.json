@@ -974,5 +974,13 @@
     "role": "Admin",
     "district_id": 250,
     "deleted": false
+  },
+  {
+    "id": "34cef09e-cebf-4c47-a4b3-c5c4d84917b4",
+    "username": "admin_1234567989",
+    "phone": "1234567989",
+    "role": "Admin",
+    "district_id": 250,
+    "deleted": false
   }
 ]

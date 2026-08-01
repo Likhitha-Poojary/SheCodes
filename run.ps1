@@ -8,10 +8,10 @@ Get-CimInstance Win32_Process | Where-Object { $_.Name -match "node|python" -and
 
 Write-Host "Launching CityMind AI Karnataka services..." -ForegroundColor Cyan
 
-# 1. Start Consolidated Backend (Port 8080)
-Write-Host "Starting Consolidated Backend (Port 8080)..." -ForegroundColor Green
+# 1. Start Consolidated Backend (Port 8085)
+Write-Host "Starting Consolidated Backend (Port 8085)..." -ForegroundColor Green
 $api = [PowerShell]::Create()
-[void]$api.AddScript("cd '$PSScriptRoot\backend' ; python -m uvicorn app:app --host 0.0.0.0 --port 8080 --reload")
+[void]$api.AddScript("cd '$PSScriptRoot\backend' ; python -m uvicorn app:app --host 0.0.0.0 --port 8085 --reload")
 $apiResult = $api.BeginInvoke()
 
 # 2. Start Citizen Portal (Port 3001)
@@ -39,7 +39,7 @@ $aid = [PowerShell]::Create()
 $aidResult = $aid.BeginInvoke()
 
 Write-Host "All services started! Keep this session open to test." -ForegroundColor Green
-Write-Host "Consolidated Backend: http://localhost:8080/health" -ForegroundColor Green
+Write-Host "Consolidated Backend: http://localhost:8085/health" -ForegroundColor Green
 Write-Host "Citizen Portal:       http://localhost:3001" -ForegroundColor Yellow
 Write-Host "Officer Portal:       http://localhost:3002" -ForegroundColor Yellow
 Write-Host "Admin Portal:         http://localhost:3003" -ForegroundColor Yellow

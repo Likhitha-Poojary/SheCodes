@@ -296,40 +296,78 @@ export default function ReportGrievance() {
     }
   };
 
+  // Helper function to validate description meaningfulness
+  const validateDescription = (text: string): { isValid: boolean; error: string } => {
+    const trimmed = text.trim();
+    if (!trimmed) {
+      return { isValid: false, error: "Description is required (minimum 10 characters)." };
+    }
+    if (trimmed.length < 10) {
+      return { isValid: false, error: `Description must be at least 10 characters (currently ${trimmed.length}).` };
+    }
+
+    const lower = trimmed.toLowerCase();
+
+    // 1. Known gibberish and keyboard mash sequences
+    const gibberishPatterns = [
+      "asdf", "qwerty", "zxcv", "1111", "2222", "3333", "4444", "5555",
+      "6666", "7777", "8888", "9999", "0000", "aaaa", "bbbb", "cccc",
+      "dddd", "xxxx", "yyyy", "zzzz", "abcd", "hjkl", "lkjh"
+    ];
+    if (gibberishPatterns.some((pattern) => lower.includes(pattern))) {
+      return { isValid: false, error: "Please enter a meaningful complaint description." };
+    }
+
+    // 2. Single repeated character pattern (e.g. "aaaaaaaaaa", "1111111111", "..........", "__________")
+    if (/^(.)\1+$/.test(trimmed)) {
+      return { isValid: false, error: "Please enter a meaningful complaint description." };
+    }
+
+    // 3. Repeating short sequence pattern (e.g. "abcabcabcabc", "testtesttest", "xyzxyzxyz")
+    if (/^(.{1,4})\1+$/i.test(trimmed)) {
+      return { isValid: false, error: "Please enter a meaningful complaint description." };
+    }
+
+    // 4. Low character diversity for text with letters (less than 3 distinct characters)
+    const lettersOnly = lower.replace(/[^a-z]/g, "");
+    if (lettersOnly.length > 0 && new Set(lettersOnly).size < 3) {
+      return { isValid: false, error: "Please enter a meaningful complaint description." };
+    }
+
+    // 5. English word structure check: words > 3 chars with no vowels
+    const latinOnly = trimmed.replace(/[^a-zA-Z\s]/g, "").trim();
+    if (latinOnly.length > 0) {
+      const words = latinOnly.split(/\s+/);
+      const vowels = /[aeiouyAEIOUY]/;
+      for (const w of words) {
+        if (w.length > 3 && !vowels.test(w)) {
+          return { isValid: false, error: "Please enter a meaningful complaint description." };
+        }
+      }
+    }
+
+    return { isValid: true, error: "" };
+  };
+
+  // Derived validation states for real-time validation and submit button control
+  const descValidation = validateDescription(description);
+  const isDescValid = descValidation.isValid && !descError;
+  const isCategoryValid = categoryID.trim().length > 0;
+  const isImageUploaded = !!imagePath;
+  const isImageValid = isImageUploaded && !imageError && validationResult?.validation_status !== "WARNING" && validationResult?.validation_status !== "LOW_CONFIDENCE";
+  const isLocationValid = typeof lat === "number" && !isNaN(lat) && lat !== 0 && typeof lon === "number" && !isNaN(lon) && lon !== 0;
+
+  const isFormValid = isDescValid && isCategoryValid && isImageValid && isLocationValid && !isValidatingImage;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Direct gibberish or empty vowel string validation check on click Submit
-    const isSentenceProper = (text: string): boolean => {
-      const clean = text.replace(/[^a-zA-Z\s]/g, "").trim();
-      if (!clean) return true; // Accept non-English/purely Kannada characters
-      const words = clean.split(/\s+/);
-      const hasEnglish = /[a-zA-Z]/.test(clean);
-      if (hasEnglish) {
-        const vowels = /[aeiouyAEIOUY]/;
-        for (const w of words) {
-          if (w.length > 3 && !vowels.test(w)) {
-            return false;
-          }
-        }
+    if (!isFormValid) {
+      if (!isImageUploaded) {
+        setImageError("Please upload an incident image before submitting.");
       }
-      return true;
-    };
-
-    if (!isSentenceProper(description) || description.length < 10 || descError) {
-      const displayMsg = language === "kn"
-        ? "ಇದು ಸರಿಯಾದ ವಾಕ್ಯವಲ್ಲ. ದಯವಿಟ್ಟು ದೂರನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ವಿವರಿಸಿ."
-        : "Not a proper sentence. Please describe the grievance clearly.";
-      setDescError(displayMsg);
-      alert(displayMsg);
       return;
     }
-
-    if (imageError) {
-      alert(imageError);
-      return;
-    }
-    if (!description || !categoryID) return;
 
     setShowAiLoader(true);
 
@@ -380,7 +418,7 @@ export default function ReportGrievance() {
           updated_at: new Date().toISOString()
         };
         // Persist fallback record directly to backend database
-        fetch("http://localhost:8080/complaints", {
+        fetch("http://localhost:8085/complaints", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ description, latitude: lat, longitude: lon, location_text: "Incident location", category_id: categoryID })
@@ -411,7 +449,7 @@ export default function ReportGrievance() {
         updated_at: new Date().toISOString()
       };
       // Persist fallback record directly to backend database
-      fetch("http://localhost:8080/complaints", {
+      fetch("http://localhost:8085/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description, latitude: lat, longitude: lon, location_text: "Incident location", category_id: categoryID })
@@ -470,14 +508,32 @@ export default function ReportGrievance() {
           
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (descError) setDescError("");
+            }}
             placeholder={t("report.desc_placeholder")}
             rows={4}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-blue-500 transition"
+            className={`w-full px-4 py-3 bg-slate-50 border rounded-2xl text-sm font-semibold focus:outline-none transition ${
+              !descValidation.isValid || descError
+                ? "border-red-400 focus:border-red-500"
+                : description.length > 0 && descValidation.isValid
+                ? "border-green-400 focus:border-green-500"
+                : "border-slate-200 focus:border-blue-500"
+            }`}
             required
           />
-          {descError && (
-            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse">{descError}</p>
+          {(!descValidation.isValid || descError) && (
+            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+              <span>⚠️</span>
+              <span>{!descValidation.isValid ? descValidation.error : descError}</span>
+            </p>
+          )}
+          {descValidation.isValid && !descError && description.trim().length > 0 && (
+            <p className="mt-1 text-xs font-semibold text-green-600 flex items-center gap-1">
+              <span>✓</span>
+              <span>Valid description</span>
+            </p>
           )}
         </div>
 
@@ -492,7 +548,11 @@ export default function ReportGrievance() {
             onChange={(e) => {
               setCategoryID(e.target.value);
             }}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-blue-500 transition"
+            className={`w-full px-4 py-3 bg-slate-50 border rounded-2xl text-sm font-semibold focus:outline-none transition ${
+              !isCategoryValid
+                ? "border-red-400 focus:border-red-500"
+                : "border-green-400 focus:border-green-500"
+            }`}
             required
           >
             <option value="">{t("report.choose_category")}</option>
@@ -502,6 +562,18 @@ export default function ReportGrievance() {
               </option>
             ))}
           </select>
+          {!isCategoryValid && (
+            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+              <span>⚠️</span>
+              <span>Please select an incident category.</span>
+            </p>
+          )}
+          {isCategoryValid && (
+            <p className="mt-1 text-xs font-semibold text-green-600 flex items-center gap-1">
+              <span>✓</span>
+              <span>Category selected</span>
+            </p>
+          )}
         </div>
 
         {/* Priority Selector */}
@@ -530,10 +602,18 @@ export default function ReportGrievance() {
         </div>
 
         {/* Map Picker Widget */}
-        <MapPicker onChange={(latVal, lonVal) => {
-          setLat(latVal);
-          setLon(lonVal);
-        }} />
+        <div>
+          <MapPicker onChange={(latVal, lonVal) => {
+            setLat(latVal);
+            setLon(lonVal);
+          }} />
+          {!isLocationValid && (
+            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+              <span>⚠️</span>
+              <span>Valid location coordinates are required.</span>
+            </p>
+          )}
+        </div>
 
         {/* Image / Camera upload inputs */}
         <div>
@@ -562,6 +642,8 @@ export default function ReportGrievance() {
               className={`border-2 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center text-xs font-bold transition ${
                 imagePath && !imageName.includes("camera")
                   ? "border-green-500 bg-green-50 text-green-700"
+                  : !isImageUploaded
+                  ? "border-red-300 hover:border-red-400 text-gray-400"
                   : "border-gray-200 hover:border-blue-500 text-gray-400"
               }`}
             >
@@ -575,6 +657,8 @@ export default function ReportGrievance() {
               className={`border-2 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center text-xs font-bold transition ${
                 imagePath && imageName.includes("camera")
                   ? "border-green-500 bg-green-50 text-green-700"
+                  : !isImageUploaded
+                  ? "border-red-300 hover:border-red-400 text-gray-400"
                   : "border-gray-200 hover:border-blue-500 text-gray-400"
               }`}
             >
@@ -582,8 +666,26 @@ export default function ReportGrievance() {
               <span>{t("report.take_photo")}</span>
             </button>
           </div>
-          {imageError && (
-            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse">{imageError}</p>
+
+          {!isImageUploaded && (
+            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+              <span>⚠️</span>
+              <span>Please upload an incident image before submitting.</span>
+            </p>
+          )}
+
+          {isImageUploaded && imageError && (
+            <p className="mt-2 text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+              <span>⚠️</span>
+              <span>{imageError}</span>
+            </p>
+          )}
+
+          {isImageUploaded && !imageError && isImageValid && (
+            <p className="mt-1 text-xs font-semibold text-green-600 flex items-center gap-1">
+              <span>✓</span>
+              <span>Incident image attached successfully</span>
+            </p>
           )}
           
           {imagePath && (
@@ -591,7 +693,7 @@ export default function ReportGrievance() {
               <span className="text-slate-600 truncate max-w-[200px]">{imageName || t("report.photo_attached")}</span>
               <button 
                 type="button" 
-                onClick={() => { setImagePath(null); setImageName(""); setValidationResult(null); }} 
+                onClick={() => { setImagePath(null); setImageName(""); setValidationResult(null); setImageError(""); }} 
                 className="text-red-500 hover:text-red-700 font-bold px-2 py-1"
               >
                 {t("report.remove")}
@@ -643,9 +745,9 @@ export default function ReportGrievance() {
 
         <button
           type="submit"
-          disabled={imagePath ? (isValidatingImage || validationResult?.validation_status !== "VERIFIED") : false}
+          disabled={!isFormValid}
           className={`w-full py-4 font-bold rounded-2xl transition shadow-md flex items-center justify-center gap-2 ${
-            imagePath && (isValidatingImage || validationResult?.validation_status !== "VERIFIED")
+            !isFormValid
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
