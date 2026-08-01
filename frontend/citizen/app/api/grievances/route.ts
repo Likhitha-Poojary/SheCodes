@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-<<<<<<< Updated upstream
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
-=======
 const PRIMARY_BACKEND = process.env.BACKEND_URL || "http://localhost:8080";
 const SECONDARY_BACKEND = "http://127.0.0.1:8080";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-karnataka-citymind-key-18273";
->>>>>>> Stashed changes
 
 async function safeFetchBackend(path: string, options: RequestInit) {
   try {
