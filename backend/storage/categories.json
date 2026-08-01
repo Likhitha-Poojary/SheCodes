@@ -1,0 +1,20 @@
+[
+  { "id": "10000000-0000-0000-0000-000000000001", "name": "Road Pothole", "key": "category.road_pothole" },
+  { "id": "10000000-0000-0000-0000-000000000002", "name": "Road Crack", "key": "category.road_crack" },
+  { "id": "10000000-0000-0000-0000-000000000003", "name": "Garbage Dump", "key": "category.garbage_dump" },
+  { "id": "10000000-0000-0000-0000-000000000004", "name": "Illegal Dumping", "key": "category.illegal_dumping" },
+  { "id": "10000000-0000-0000-0000-000000000005", "name": "Water Leakage", "key": "category.water_leakage" },
+  { "id": "10000000-0000-0000-0000-000000000006", "name": "Drainage Blockage", "key": "category.drainage_blockage" },
+  { "id": "10000000-0000-0000-0000-000000000007", "name": "Sewage Overflow", "key": "category.sewage_overflow" },
+  { "id": "10000000-0000-0000-0000-000000000008", "name": "Streetlight Damage", "key": "category.streetlight_damage" },
+  { "id": "10000000-0000-0000-0000-000000000009", "name": "Electric Pole Damage", "key": "category.electric_pole_damage" },
+  { "id": "10000000-0000-0000-0000-000000000010", "name": "Traffic Signal Damage", "key": "category.traffic_signal_damage" },
+  { "id": "10000000-0000-0000-0000-000000000011", "name": "Tree Fallen", "key": "category.tree_fallen" },
+  { "id": "10000000-0000-0000-0000-000000000012", "name": "Flood", "key": "category.flood" },
+  { "id": "10000000-0000-0000-0000-000000000013", "name": "Fire", "key": "category.fire" },
+  { "id": "10000000-0000-0000-0000-000000000014", "name": "Building Damage", "key": "category.building_damage" },
+  { "id": "10000000-0000-0000-0000-000000000015", "name": "Public Toilet Issue", "key": "category.public_toilet_issue" },
+  { "id": "10000000-0000-0000-0000-000000000016", "name": "Park Maintenance", "key": "category.park_maintenance" },
+  { "id": "10000000-0000-0000-0000-000000000017", "name": "Road Obstruction", "key": "category.road_obstruction" },
+  { "id": "10000000-0000-0000-0000-000000000018", "name": "Animal Carcass", "key": "category.animal_carcass" }
+]

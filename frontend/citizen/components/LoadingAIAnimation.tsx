@@ -13,9 +13,9 @@ export const LoadingAIAnimation: React.FC<LoadingAIAnimationProps> = ({ onComple
 
   const steps = [
     "Analyzing report description...",
-    "Running YOLOv8 computer vision photo validations...",
-    "Executing pgvector geographic coordinate similarity check...",
-    "Routing resolved ticket to BBMP/BWSSB queues..."
+    "Verifying attached photo...",
+    "Checking for similar reports nearby...",
+    "Routing ticket to the correct department..."
   ];
 
   useEffect(() => {

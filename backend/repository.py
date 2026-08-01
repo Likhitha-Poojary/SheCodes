@@ -134,7 +134,7 @@ class Repository:
         return None
 
     # --- complaints operations ---
-    def create_complaint(self, citizen_id: str, citizen_name: str, description: str, category: str, department: str, priority: str, officer_id: str, location_text: str, latitude: float, longitude: float, district_id: int) -> dict:
+    def create_complaint(self, citizen_id: str, citizen_name: str, description: str, category: str, department: str, priority: str, officer_id: str, location_text: str, latitude: float, longitude: float, district_id: int, image_url: Optional[str] = None) -> dict:
         comp_id = f"CMP{int(time.time() * 100) % 1000000:06d}"
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
@@ -156,7 +156,7 @@ class Repository:
             "latitude": latitude,
             "longitude": longitude,
             "district_id": district_id,
-            "sla_deadline": (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d %H:%M:%S"),
+            "image_url": image_url,
             "created_at": created_at,
             "resolved_at": None,
             "deleted": False
@@ -418,11 +418,21 @@ class Repository:
         analysis = {
             "id": complaint_id,
             "complaint_id": complaint_id,
-            "category": ai_data.get("category"),
-            "priority": ai_data.get("priority"),
+            "selected_category": ai_data.get("selected_category"),
+            "predicted_text_category": ai_data.get("predicted_text_category"),
+            "predicted_image_category": ai_data.get("predicted_image_category"),
+            "text_confidence": ai_data.get("text_confidence"),
+            "image_confidence": ai_data.get("image_confidence"),
+            "validation_status": ai_data.get("validation_status"),
+            "duplicate_found": ai_data.get("duplicate_found", False),
+            "duplicate_id": ai_data.get("duplicate_id"),
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            # Keep legacy properties for dashboard views compat
+            "category": ai_data.get("selected_category") or ai_data.get("predicted_text_category"),
+            "priority": ai_data.get("priority", "Medium"),
             "severity": ai_data.get("severity", "Medium"),
-            "department": ai_data.get("department"),
-            "confidence": ai_data.get("confidence", 0.90),
+            "department": ai_data.get("department", "BBMP"),
+            "confidence": ai_data.get("text_confidence") or ai_data.get("confidence", 0.90),
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         self.storage.create("ai_analysis", analysis)

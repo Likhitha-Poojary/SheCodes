@@ -6,6 +6,7 @@ import { Navbar } from "../components/Navbar";
 import { Sidebar } from "../components/Sidebar";
 import { useAuthStore } from "../lib/store/useAuthStore";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { useLanguage } from "../lib/context/LanguageContext";
 
 export default function LayoutClientWrapper({
   children,
@@ -14,6 +15,7 @@ export default function LayoutClientWrapper({
 }) {
   const pathname = usePathname();
   const { isAuthenticated } = useAuthStore();
+  const { t } = useLanguage();
 
   // Pages where sidebar layout should NOT render (e.g., Landing Page)
   const isLanding = pathname === "/";
@@ -36,7 +38,7 @@ export default function LayoutClientWrapper({
       </ErrorBoundary>
       
       <footer className="py-4 bg-slate-900 border-t border-slate-800 text-center text-xs text-slate-500 font-semibold w-full">
-        © 2026 Department of e-Governance, Government of Karnataka. All rights reserved.
+        {t("footer.copyright")}
       </footer>
     </div>
   );
