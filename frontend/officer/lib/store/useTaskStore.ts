@@ -14,6 +14,7 @@ export interface TaskRecord {
   distance: number; // calculated in km
   sla_deadline: string;
   ai_confidence: number;
+  district_id?: number;
 }
 
 interface OfflineAction {

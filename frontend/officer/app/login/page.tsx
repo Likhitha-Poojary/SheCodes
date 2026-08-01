@@ -19,10 +19,10 @@ export default function LoginPage() {
   useEffect(() => {
     verifySession().then(() => {
       if (useOfficerStore.getState().isAuthenticated) {
-        router.push("/dashboard");
+        window.location.assign("/dashboard");
       }
     });
-  }, [router, verifySession]);
+  }, [verifySession]);
 
   const handleGetOtp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ export default function LoginPage() {
     setErrorMsg("");
     const success = await login(phone, otp);
     if (success) {
-      router.push("/dashboard");
+      window.location.assign("/dashboard");
     } else {
       setErrorMsg("Unauthorized credentials. Ensure you enter OTP 123456.");
     }

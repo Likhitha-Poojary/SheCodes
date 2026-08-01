@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const payload = jwt.verify(token, JWT_SECRET) as any;
     
     // RBAC Security validation: Only FIELD_OFFICER or SUPERVISOR role can access
-    if (payload.role !== "FIELD_OFFICER" && payload.role !== "SUPERVISOR") {
+    if (payload.role !== "FIELD_OFFICER" && payload.role !== "SUPERVISOR" && payload.role !== "OFFICER") {
       return NextResponse.json(
         { status: "error", error: { detail: "Forbidden: Access restricted to field operational roles." } },
         { status: 403 }

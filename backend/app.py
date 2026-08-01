@@ -12,6 +12,7 @@ from repository import Repository
 from auth import UserToken, get_current_user, create_jwt, verify_jwt, RoleGuard
 from websocket import ws_manager
 import ai
+from datetime import datetime
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -48,6 +49,7 @@ class OtpVerifyRequest(BaseModel):
     phone_number: str
     otp_code: str = None
     otp_session_id: str = None
+    role: str = None
 
 class ComplaintCreateRequest(BaseModel):
     description: str
@@ -94,11 +96,12 @@ def login(req: LoginRequest):
 def verify_otp(req: OtpVerifyRequest):
     # Map phone number to appropriate role (since Next.js route passes phone and OTP)
     phone = req.phone_number
-    role = "Citizen"
-    if phone == "9876543211":
-        role = "Officer"
-    elif phone == "9876543212":
-        role = "Admin"
+    role = req.role or "Citizen"
+    if role == "Citizen":
+        if phone == "9876543211":
+            role = "Officer"
+        elif phone == "9876543212":
+            role = "Admin"
         
     user = repo.login_user(phone, role)
     if not user:
@@ -125,7 +128,6 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         
     # 1. Local AI classification & prediction
     category, confidence = ai.classify(req.description)
-    priority = ai.predict_priority(category, req.description)
     dept = ai.assign_department(category)
     
     # 2. Find default officer (Shiva Gowda / OFF001)
@@ -139,13 +141,14 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     is_duplicate = ai.find_duplicate(req.description, all_comps)
     
     # 4. Save complaint using repository
+    # Initially don't know priority, just set it to Medium
     comp = repo.create_complaint(
         citizen_id=current_user.user_id,
         citizen_name=current_user.username,
         description=req.description,
         category=category,
         department=dept,
-        priority=priority,
+        priority="Medium",
         officer_id=officer_id if not is_duplicate else None,
         location_text=req.location_text or "Karnataka",
         latitude=lat,
@@ -153,10 +156,92 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         district_id=current_user.district_id or 250
     )
     
+    # --- INCIDENT CLUSTERING & PRIORITY ENGINE ---
+    incidents = repo.get_incidents()
+    matched_incident = ai.cluster_incident(comp, incidents)
+    
+    incident_id = None
+    if matched_incident:
+        incident_id = matched_incident["id"]
+        complaint_ids = matched_incident.get("complaint_ids", [])
+        if comp["id"] not in complaint_ids:
+            complaint_ids.append(comp["id"])
+        
+        # Recalculate properties
+        report_count = len(complaint_ids)
+        # Fetch complaints to calc trend
+        cluster_comps = [c for c in all_comps + [comp] if c["id"] in complaint_ids]
+        trend = ai.calculate_trend(cluster_comps)
+        
+        # Calculate unresolved hours
+        created_at = matched_incident.get("created_at")
+        unresolved_hours = 0
+        if created_at:
+            try:
+                dt = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
+                unresolved_hours = (datetime.now() - dt).total_seconds() / 3600
+            except: pass
+            
+        score = ai.calculate_priority_score(category, report_count, trend, unresolved_hours)
+        priority_level = ai.determine_priority_level(score)
+        explanation = ai.generate_explanation(score, priority_level, category, report_count, trend)
+        
+        recommendations = ai.generate_recommendations(category)
+        
+        repo.update_incident(incident_id, {
+            "complaint_ids": complaint_ids,
+            "reports": report_count,
+            "trend": trend,
+            "priority_score": score,
+            "priority": priority_level,
+            "explanation": explanation,
+            "recommended_actions": recommendations,
+            "department": dept,
+        })
+        
+        # Notify officer if HIGH or CRITICAL and wasn't before
+        old_priority = matched_incident.get("priority", "LOW")
+        if priority_level in ["HIGH", "CRITICAL"] and old_priority not in ["HIGH", "CRITICAL"]:
+            repo.save_notification(officer_id, f"🚨 {priority_level} PRIORITY", f"{category} detected at {req.location_text}. Trend: {trend}")
+            
+    else:
+        # Create new incident
+        trend = "NEW"
+        report_count = 1
+        score = ai.calculate_priority_score(category, report_count, trend, 0)
+        priority_level = ai.determine_priority_level(score)
+        explanation = ai.generate_explanation(score, priority_level, category, report_count, trend)
+        recommendations = ai.generate_recommendations(category)
+        
+        new_inc = repo.create_incident({
+            "title": category,
+            "category": category,
+            "location": req.location_text or "Karnataka",
+            "latitude": lat,
+            "longitude": lon,
+            "district_id": current_user.district_id or 250,
+            "complaint_ids": [comp["id"]],
+            "reports": report_count,
+            "trend": trend,
+            "priority_score": score,
+            "priority": priority_level,
+            "explanation": explanation,
+            "recommended_actions": recommendations,
+            "department": dept,
+            "officer_id": officer_id
+        })
+        incident_id = new_inc["id"]
+        
+        if priority_level in ["HIGH", "CRITICAL"]:
+            repo.save_notification(officer_id, f"🚨 {priority_level} PRIORITY", f"New {category} incident at {req.location_text}.")
+
+    # Update complaint with calculated priority and incident ID
+    comp = repo.update_complaint(comp["id"], {"priority": priority_level, "incident_id": incident_id})
+    
     # 5. Save AI Analysis
     ai_data = {
         "category": category,
-        "priority": priority,
+        "priority": priority_level,
         "department": dept,
         "confidence": confidence,
         "is_duplicate": bool(is_duplicate)
@@ -166,6 +251,11 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     # 6. Broadcast WS events
     await ws_manager.broadcast_to_room(f"district:{comp['district_id']}", "complaint_created", comp)
     await ws_manager.broadcast_to_room(f"citizen:{current_user.user_id}", "complaint_created", comp)
+    
+    # Broadcast incident update to AI dashboard
+    incidents = repo.get_incidents(comp['district_id'])
+    await ws_manager.broadcast_to_room(f"ai_dashboard:{comp['district_id']}", "incidents_updated", incidents)
+    
     if officer_id and not is_duplicate:
         await ws_manager.broadcast_to_room(f"officer:{officer_id}", "task_assigned", {"complaint_id": comp["id"]})
         
@@ -258,6 +348,14 @@ async def update_task(id: str, req: TaskUpdateRequest, current_user: UserToken =
     
     return {"status": "success", "data": task}
 
+# 7.5 GET /incidents
+@app.get("/incidents")
+def get_incidents(district_id: int = 250):
+    incidents = repo.get_incidents(district_id)
+    # Sort by priority score descending
+    incidents.sort(key=lambda x: x.get("priority_score", 0), reverse=True)
+    return {"status": "success", "data": incidents}
+
 # 8. GET /dashboard
 @app.get("/dashboard")
 def get_dashboard(district_id: int = 250, current_user: UserToken = Depends(get_current_user)):
@@ -324,6 +422,29 @@ def start_duty_legacy(current_user: UserToken = Depends(get_current_user)):
 def end_duty_legacy(current_user: UserToken = Depends(get_current_user)):
     return {"status": "success", "data": {"message": "Duty session ended successfully"}}
 
+@app.post("/incidents/{id}/notify")
+async def notify_officer(id: str):
+    try:
+        incidents = repo.get_incidents()
+        incident = next((i for i in incidents if i["id"] == id), None)
+        if not incident:
+            raise HTTPException(status_code=404, detail="Incident not found")
+            
+        # Log a notification (using a dummy officer or existing assigned officer if any)
+        officer_id = incident.get("officer_id", "unassigned")
+        repo.save_notification(
+            officer_id,
+            f"🚨 CRITICAL INCIDENT ALERT: {incident.get('category')}",
+            f"Please respond immediately to {incident.get('location')}. Priority: {incident.get('priority')}"
+        )
+        
+        return {"status": "success", "message": f"Officer notified for incident {id}"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error notifying officer: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # 12. GET /health
 @app.get("/health")
 def health():
@@ -345,3 +466,79 @@ async def websocket_endpoint(websocket: WebSocket, room_name: str):
             logger.info(f"WebSocket incoming text in room {room_name}: {data}")
     except WebSocketDisconnect:
         ws_manager.disconnect(websocket, room_name)
+
+# --- INITIALIZATION ---
+def initialize_incidents():
+    comps = repo.get_complaints()
+    incidents = repo.get_incidents()
+    if not incidents and comps:
+        logger.info(f"Initializing {len(comps)} existing complaints into AI incident clusters...")
+        for comp in comps:
+            # We don't want to duplicate logic, so we just run the same logic as create_complaint
+            matched = ai.cluster_incident(comp, repo.get_incidents())
+            if matched:
+                incident_id = matched["id"]
+                complaint_ids = matched.get("complaint_ids", [])
+                if comp["id"] not in complaint_ids:
+                    complaint_ids.append(comp["id"])
+                
+                report_count = len(complaint_ids)
+                cluster_comps = [c for c in comps if c["id"] in complaint_ids]
+                trend = ai.calculate_trend(cluster_comps)
+                
+                created_at = matched.get("created_at")
+                unresolved_hours = 0
+                if created_at:
+                    try:
+                        dt = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
+                        unresolved_hours = (datetime.now() - dt).total_seconds() / 3600
+                    except: pass
+                    
+                cat = comp.get("category") or comp.get("title") or "General"
+                score = ai.calculate_priority_score(cat, report_count, trend, unresolved_hours)
+                priority_level = ai.determine_priority_level(score)
+                explanation = ai.generate_explanation(score, priority_level, cat, report_count, trend)
+                recommendations = ai.generate_recommendations(cat)
+                
+                repo.update_incident(incident_id, {
+                    "complaint_ids": complaint_ids,
+                    "reports": report_count,
+                    "trend": trend,
+                    "priority_score": score,
+                    "priority": priority_level,
+                    "explanation": explanation,
+                    "recommended_actions": recommendations,
+                    "department": comp.get("department", "General"),
+                })
+                repo.update_complaint(comp["id"], {"priority": priority_level, "incident_id": incident_id})
+            else:
+                trend = "NEW"
+                report_count = 1
+                cat = comp.get("category") or comp.get("title") or "General"
+                score = ai.calculate_priority_score(cat, report_count, trend, 0)
+                priority_level = ai.determine_priority_level(score)
+                explanation = ai.generate_explanation(score, priority_level, cat, report_count, trend)
+                recommendations = ai.generate_recommendations(cat)
+                
+                new_inc = repo.create_incident({
+                    "title": cat,
+                    "category": cat,
+                    "location": comp.get("location_text", comp.get("location", "Karnataka")),
+                    "latitude": comp.get("latitude"),
+                    "longitude": comp.get("longitude"),
+                    "district_id": comp.get("district_id", 250),
+                    "complaint_ids": [comp["id"]],
+                    "reports": report_count,
+                    "trend": trend,
+                    "priority_score": score,
+                    "priority": priority_level,
+                    "explanation": explanation,
+                    "recommended_actions": recommendations,
+                    "department": comp.get("department", "General"),
+                    "officer_id": comp.get("officer_id")
+                })
+                repo.update_complaint(comp["id"], {"priority": priority_level, "incident_id": new_inc["id"]})
+        logger.info("Incident initialization complete.")
+
+# Run initialization on startup
+initialize_incidents()

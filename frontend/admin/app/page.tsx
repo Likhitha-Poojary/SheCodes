@@ -12,12 +12,12 @@ export default function Home() {
     verifySession().then(() => {
       const isAuth = useAdminStore.getState().isAuthenticated;
       if (isAuth) {
-        router.push("/dashboard");
+        window.location.assign("/dashboard");
       } else {
-        router.push("/login");
+        window.location.assign("/login");
       }
     });
-  }, [router, verifySession]);
+  }, [verifySession]);
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white text-xs font-semibold">

@@ -18,10 +18,10 @@ export default function LoginPage() {
   useEffect(() => {
     verifySession().then(() => {
       if (useAdminStore.getState().isAuthenticated) {
-        router.push("/dashboard");
+        window.location.assign("/dashboard");
       }
     });
-  }, [router, verifySession]);
+  }, [verifySession]);
 
   const handleGetOtp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export default function LoginPage() {
     setErrorMsg("");
     const success = await login(phone, otp, role);
     if (success) {
-      router.push("/dashboard");
+      window.location.assign("/dashboard");
     } else {
       setErrorMsg("Verification failed. For testing, use OTP 123456.");
     }
