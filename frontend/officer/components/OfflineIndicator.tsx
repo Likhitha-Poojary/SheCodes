@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useTaskStore } from "../store/useTaskStore";
+import { useTaskStore } from "../lib/store/useTaskStore";
 import { WifiOff, Wifi, RefreshCw } from "lucide-react";
 
 export const OfflineIndicator: React.FC = () => {

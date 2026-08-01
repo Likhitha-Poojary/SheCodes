@@ -4,8 +4,8 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
-import { useOfficerStore } from "../../store/useOfficerStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useOfficerStore } from "../../lib/store/useOfficerStore";
 import { PerformanceChart } from "../../components/PerformanceChart";
 
 export default function PerformanceScreen() {

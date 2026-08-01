@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, HelpCircle, LogOut, Sun, Globe } from "lucide-react";
-import { useAdminStore } from "../store/useAdminStore";
-import { useComplaintStore } from "../store/useComplaintStore";
+import { useAdminStore } from "../lib/store/useAdminStore";
+import { useComplaintStore } from "../lib/store/useComplaintStore";
 import { NotificationCenter } from "./NotificationCenter";
 
 export const TopNavbar: React.FC = () => {

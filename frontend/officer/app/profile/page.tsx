@@ -4,8 +4,8 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, User, Globe, ShieldAlert } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
-import { useOfficerStore } from "../../store/useOfficerStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useOfficerStore } from "../../lib/store/useOfficerStore";
 
 export default function ProfileScreen() {
   const { t, language, setLanguage } = useLanguage();

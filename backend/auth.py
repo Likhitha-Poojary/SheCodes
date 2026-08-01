@@ -17,10 +17,21 @@ class UserToken(BaseModel):
     district_id: int
 
 def create_jwt(user_id: str, username: str, role: str, phone: str, district_id: int) -> str:
+    # Normalize roles for frontend portal compatibility
+    role_upper = role.upper()
+    if role_upper in ["CITIZEN", "CITIZEN"]:
+        norm_role = "CITIZEN"
+    elif role_upper in ["OFFICER", "FIELD_OFFICER"]:
+        norm_role = "FIELD_OFFICER"
+    elif role_upper in ["ADMIN", "DEPT_HEAD", "DEPARTMENT_HEAD"]:
+        norm_role = "DEPARTMENT_HEAD"
+    else:
+        norm_role = role
+
     payload = {
         "sub": user_id,
         "preferred_username": username,
-        "role": role,
+        "role": norm_role,
         "phone": phone,
         "district_id": district_id,
         "exp": datetime.utcnow() + timedelta(hours=24)
@@ -32,7 +43,15 @@ def verify_jwt(token: str) -> UserToken:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         role = payload.get("role", "Citizen")
         # Handle role normalization
-        norm_role = "CITIZEN" if role.lower() == "citizen" else "FIELD_OFFICER" if role.lower() == "officer" else "DEPT_HEAD" if role.lower() in ["admin", "dept_head"] else role
+        role_lower = role.lower()
+        if role_lower in ["citizen", "citizen"]:
+            norm_role = "CITIZEN"
+        elif role_lower in ["officer", "field_officer"]:
+            norm_role = "FIELD_OFFICER"
+        elif role_lower in ["admin", "dept_head", "department_head"]:
+            norm_role = "DEPT_HEAD"
+        else:
+            norm_role = role
         
         return UserToken(
             user_id=str(payload["sub"]),

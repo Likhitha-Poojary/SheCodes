@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Sparkles, MapPin, Calendar, Users, CheckCircle, ShieldAlert } from "lucide-react";
-import { useAdminStore } from "../../../store/useAdminStore";
-import { useComplaintStore } from "../../../store/useComplaintStore";
+import { useAdminStore } from "../../../lib/store/useAdminStore";
+import { useComplaintStore } from "../../../lib/store/useComplaintStore";
 import { SLAIndicator } from "../../../components/SLAIndicator";
 
 export default function ComplaintDetails() {

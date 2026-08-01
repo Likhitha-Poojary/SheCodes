@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "../store/useAdminStore";
+import { useAdminStore } from "../lib/store/useAdminStore";
 
 export default function Home() {
   const router = useRouter();

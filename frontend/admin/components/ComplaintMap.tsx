@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useMapStore } from "../store/useMapStore";
-import { ComplaintRecord, OfficerRecord } from "../store/useComplaintStore";
+import { useMapStore } from "../lib/store/useMapStore";
+import { ComplaintRecord, OfficerRecord } from "../lib/store/useComplaintStore";
 import { Map, Layers, Radio, Users } from "lucide-react";
 
 interface ComplaintMapProps {

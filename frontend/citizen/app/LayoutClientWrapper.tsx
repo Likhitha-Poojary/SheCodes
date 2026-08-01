@@ -4,7 +4,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "../components/Navbar";
 import { Sidebar } from "../components/Sidebar";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../lib/store/useAuthStore";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 
 export default function LayoutClientWrapper({

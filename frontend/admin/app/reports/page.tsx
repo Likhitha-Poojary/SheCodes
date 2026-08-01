@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "../../store/useAdminStore";
+import { useAdminStore } from "../../lib/store/useAdminStore";
 import { ReportGenerator } from "../../components/ReportGenerator";
 
 export default function ReportsScreen() {

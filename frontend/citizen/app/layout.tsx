@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { LanguageProvider } from "../context/LanguageContext";
-import { AccessibilityProvider } from "../context/AccessibilityContext";
-import { RealTimeStatusProvider } from "../utils/websocket";
+import { LanguageProvider } from "../lib/context/LanguageContext";
+import { AccessibilityProvider } from "../lib/context/AccessibilityContext";
+import { RealTimeStatusProvider } from "../lib/utils/websocket";
 import LayoutClientWrapper from "./LayoutClientWrapper";
 
 const inter = Inter({ subsets: ["latin"] });

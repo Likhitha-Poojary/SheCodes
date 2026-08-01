@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { MapPin, Clock, ArrowRight, ShieldAlert, Sparkles } from "lucide-react";
-import { TaskRecord } from "../store/useTaskStore";
+import { TaskRecord } from "../lib/store/useTaskStore";
 import { PriorityBadge } from "./PriorityBadge";
 
 interface TaskCardProps {

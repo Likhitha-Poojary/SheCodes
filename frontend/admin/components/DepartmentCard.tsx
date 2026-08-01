@@ -1,6 +1,6 @@
 import React from "react";
 import { Building, ArrowUpRight, Clock, CheckCircle } from "lucide-react";
-import { DepartmentRecord } from "../store/useComplaintStore";
+import { DepartmentRecord } from "../lib/store/useComplaintStore";
 
 interface DepartmentCardProps {
   dept: DepartmentRecord;

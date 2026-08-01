@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "../context/LanguageContext";
-import { useAuthStore } from "../store/useAuthStore";
+import { useLanguage } from "../lib/context/LanguageContext";
+import { useAuthStore } from "../lib/store/useAuthStore";
 import { Sparkles, Phone, ShieldCheck, CheckCircle2, ChevronDown } from "lucide-react";
 
 export default function LandingPage() {

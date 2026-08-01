@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useAIStore } from "../../store/useAIStore";
+import { useAIStore } from "../../lib/store/useAIStore";
 import { AIModelCard } from "../../components/AIModelCard";
 
 export default function AIModelsScreen() {

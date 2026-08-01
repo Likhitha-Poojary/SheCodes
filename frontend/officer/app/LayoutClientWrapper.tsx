@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, ListTodo, BarChart3, UserCog } from "lucide-react";
 import { OfflineIndicator } from "../components/OfflineIndicator";
-import { useOfficerStore } from "../store/useOfficerStore";
+import { useOfficerStore } from "../lib/store/useOfficerStore";
 
 export default function LayoutClientWrapper({
   children,

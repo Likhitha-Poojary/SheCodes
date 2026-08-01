@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "../../context/LanguageContext";
-import { useAuthStore } from "../../store/useAuthStore";
-import { useGrievanceStore } from "../../store/useGrievanceStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useAuthStore } from "../../lib/store/useAuthStore";
+import { useGrievanceStore } from "../../lib/store/useGrievanceStore";
 import { MapPicker } from "../../components/MapPicker";
 import { AIRecommendation, AIInfo } from "../../components/AIRecommendation";
 import { LoadingAIAnimation } from "../../components/LoadingAIAnimation";

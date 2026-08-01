@@ -1,6 +1,6 @@
 import React from "react";
 import { Sparkles, MapPin, Clock, ArrowRight } from "lucide-react";
-import { PredictionItem } from "../utils/demoData";
+import { PredictionItem } from "../lib/utils/demoData";
 
 interface PredictionCardProps {
   prediction: PredictionItem;

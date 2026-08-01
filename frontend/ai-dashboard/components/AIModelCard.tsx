@@ -1,6 +1,6 @@
 import React from "react";
 import { Cpu, CheckCircle, Calendar, RefreshCw } from "lucide-react";
-import { AIModelItem } from "../utils/demoData";
+import { AIModelItem } from "../lib/utils/demoData";
 
 interface AIModelCardProps {
   model: AIModelItem;

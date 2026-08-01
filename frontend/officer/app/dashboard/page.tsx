@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useLanguage } from "../../context/LanguageContext";
-import { useOfficerStore, DutyStatus } from "../../store/useOfficerStore";
-import { useTaskStore } from "../../store/useTaskStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useOfficerStore, DutyStatus } from "../../lib/store/useOfficerStore";
+import { useTaskStore } from "../../lib/store/useTaskStore";
 import { LocationTracker } from "../../components/LocationTracker";
 import { Play, LogOut, ShieldAlert, Sparkles, Navigation, CheckCircle, ShieldX } from "lucide-react";
 

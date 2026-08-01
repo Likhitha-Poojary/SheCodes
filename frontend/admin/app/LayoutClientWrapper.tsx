@@ -4,7 +4,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { TopNavbar } from "../components/TopNavbar";
 import { Sidebar } from "../components/Sidebar";
-import { useAdminStore } from "../store/useAdminStore";
+import { useAdminStore } from "../lib/store/useAdminStore";
 
 export default function LayoutClientWrapper({
   children,

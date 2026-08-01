@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { LanguageProvider } from "../context/LanguageContext";
-import { RealTimeProvider } from "../context/RealTimeProvider";
+import { LanguageProvider } from "../lib/context/LanguageContext";
+import { RealTimeProvider } from "../lib/context/RealTimeProvider";
 import LayoutClientWrapper from "./LayoutClientWrapper";
 
 const inter = Inter({ subsets: ["latin"] });

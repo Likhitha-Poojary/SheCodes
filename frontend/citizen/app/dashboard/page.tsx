@@ -3,9 +3,9 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { Plus, BarChart3, Users, CheckCircle, Clock } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
-import { useAuthStore } from "../../store/useAuthStore";
-import { useGrievanceStore } from "../../store/useGrievanceStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useAuthStore } from "../../lib/store/useAuthStore";
+import { useGrievanceStore } from "../../lib/store/useGrievanceStore";
 import { ComplaintCard } from "../../components/ComplaintCard";
 import { EmergencyButton } from "../../components/EmergencyButton";
 import { EmptyState } from "../../components/EmptyState";

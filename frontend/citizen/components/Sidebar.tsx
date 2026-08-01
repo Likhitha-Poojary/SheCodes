@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, FileText, User, ShieldAlert } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../lib/context/LanguageContext";
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();

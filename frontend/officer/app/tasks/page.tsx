@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Filter, Sparkles } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
-import { useOfficerStore } from "../../store/useOfficerStore";
-import { useTaskStore } from "../../store/useTaskStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useOfficerStore } from "../../lib/store/useOfficerStore";
+import { useTaskStore } from "../../lib/store/useTaskStore";
 import { TaskCard } from "../../components/TaskCard";
 import { EmptyState } from "../../components/EmptyState";
 

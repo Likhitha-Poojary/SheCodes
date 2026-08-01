@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { usePredictionStore } from "../../store/usePredictionStore";
+import { usePredictionStore } from "../../lib/store/usePredictionStore";
 import { PredictionCard } from "../../components/PredictionCard";
 import { ForecastGraph } from "../../components/ForecastGraph";
 import { Activity } from "lucide-react";

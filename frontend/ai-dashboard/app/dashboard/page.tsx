@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useAIStore } from "../../store/useAIStore";
-import { usePredictionStore } from "../../store/usePredictionStore";
+import { useAIStore } from "../../lib/store/useAIStore";
+import { usePredictionStore } from "../../lib/store/usePredictionStore";
 import { ConfidenceScore } from "../../components/ConfidenceScore";
 import { TrendChart } from "../../components/TrendChart";
 import { RecommendationPanel } from "../../components/RecommendationPanel";

@@ -7966,5 +7966,37 @@
     "ai_confidence": 0.88,
     "assigned_officer_id": "OFF-MNG-002",
     "deleted": false
+  },
+  {
+    "id": "CMP813767",
+    "task_id": "TASK813805",
+    "complaint_id": "CMP813767",
+    "ticket_number": "CMP813767",
+    "description": "pathehole",
+    "officer": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "assigned_officer_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "status": "Assigned",
+    "priority": "Low",
+    "latitude": 12.908740694493952,
+    "longitude": 74.83732397819982,
+    "distance": 1.5,
+    "sla_deadline": "2026-08-03 18:12:18",
+    "deleted": false
+  },
+  {
+    "id": "CMP872987",
+    "task_id": "TASK873058",
+    "complaint_id": "CMP872987",
+    "ticket_number": "CMP872987",
+    "description": "water not comming",
+    "officer": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "assigned_officer_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "status": "Assigned",
+    "priority": "High",
+    "latitude": 12.908747075292277,
+    "longitude": 74.83731836444824,
+    "distance": 1.5,
+    "sla_deadline": "2026-08-03 18:22:10",
+    "deleted": false
   }
 ]

@@ -14908,5 +14908,33 @@
     "complaint_id": "grv-gen-500",
     "event": "Resolved",
     "timestamp": "2026-07-28 16:41:28"
+  },
+  {
+    "id": "c90381c7-3d50-45ca-8b8b-0360a588f4e7",
+    "complaint_id": "CMP813767",
+    "event": "Complaint Submitted",
+    "timestamp": "2026-08-01 18:12:17",
+    "deleted": false
+  },
+  {
+    "id": "3e3c0835-6bae-44f0-8ed9-dcc16b055c28",
+    "complaint_id": "CMP813767",
+    "event": "Officer Assigned",
+    "timestamp": "2026-08-01 18:12:17",
+    "deleted": false
+  },
+  {
+    "id": "031390f2-1bb2-4b4b-8d6f-e4b723e34be9",
+    "complaint_id": "CMP872987",
+    "event": "Complaint Submitted",
+    "timestamp": "2026-08-01 18:22:09",
+    "deleted": false
+  },
+  {
+    "id": "115db6af-a360-4143-84c2-dc7aee458618",
+    "complaint_id": "CMP872987",
+    "event": "Officer Assigned",
+    "timestamp": "2026-08-01 18:22:09",
+    "deleted": false
   }
 ]

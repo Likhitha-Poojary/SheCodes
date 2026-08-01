@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search, SlidersHorizontal } from "lucide-react";
-import { ComplaintRecord } from "../store/useComplaintStore";
+import { ComplaintRecord } from "../lib/store/useComplaintStore";
 import { SLAIndicator } from "./SLAIndicator";
 
 interface ComplaintTableProps {

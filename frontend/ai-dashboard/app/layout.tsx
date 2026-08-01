@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { RealTimeProvider } from "../context/RealTimeProvider";
+import { RealTimeProvider } from "../lib/context/RealTimeProvider";
 import LayoutClientWrapper from "./LayoutClientWrapper";
 
 const inter = Inter({ subsets: ["latin"] });

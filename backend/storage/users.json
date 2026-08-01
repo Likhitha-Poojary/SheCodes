@@ -822,5 +822,45 @@
     "role": "CITIZEN",
     "district_id": 250,
     "deleted": false
+  },
+  {
+    "id": "ae0f160c-78d8-416b-bf6d-b413577ab80a",
+    "username": "citizen_1111111111",
+    "phone": "1111111111",
+    "role": "Citizen",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "e3a4b901-ddfd-480d-9072-7c8c0f9889e5",
+    "username": "citizen_1212121212",
+    "phone": "1212121212",
+    "role": "Citizen",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "fd7070a9-e3ad-4c3c-bfb4-e297779448d8",
+    "username": "citizen_1234544322",
+    "phone": "1234544322",
+    "role": "Citizen",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "f4e3ea23-7591-4140-b199-6a929ed708de",
+    "username": "citizen_1234567878",
+    "phone": "1234567878",
+    "role": "Citizen",
+    "district_id": 250,
+    "deleted": false
+  },
+  {
+    "id": "a9b83803-ed8a-487c-86e4-a66504820724",
+    "username": "citizen_1234567877",
+    "phone": "1234567877",
+    "role": "Citizen",
+    "district_id": 250,
+    "deleted": false
   }
 ]

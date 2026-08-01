@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { CheckSquare, Square, Check, Play, ShieldAlert } from "lucide-react";
-import { useTaskStore } from "../store/useTaskStore";
+import { useTaskStore } from "../lib/store/useTaskStore";
 
 interface StatusUpdaterProps {
   taskId: string;

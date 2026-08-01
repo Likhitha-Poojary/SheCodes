@@ -2,9 +2,9 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "../../context/LanguageContext";
-import { useAccessibility } from "../../context/AccessibilityContext";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useAccessibility } from "../../lib/context/AccessibilityContext";
+import { useAuthStore } from "../../lib/store/useAuthStore";
 import { ArrowLeft, User, Globe, Eye, Type, Shield } from "lucide-react";
 import Link from "next/link";
 

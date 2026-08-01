@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../lib/context/LanguageContext";
 
 interface OfficerTrackingMapProps {
   complaintLat: number;

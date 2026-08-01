@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { MapPin, Calendar, ArrowRight } from "lucide-react";
-import { GrievanceRecord } from "../store/useGrievanceStore";
+import { GrievanceRecord } from "../lib/store/useGrievanceStore";
 import { StatusBadge } from "./StatusBadge";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../lib/context/LanguageContext";
 
 interface ComplaintCardProps {
   complaint: GrievanceRecord;

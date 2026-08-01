@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "../../store/useAdminStore";
+import { useAdminStore } from "../../lib/store/useAdminStore";
 import { ShieldCheck, UserCheck, ShieldX } from "lucide-react";
 
 export default function LoginPage() {

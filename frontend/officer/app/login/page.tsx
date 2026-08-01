@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "../../context/LanguageContext";
-import { useOfficerStore } from "../../store/useOfficerStore";
+import { useLanguage } from "../../lib/context/LanguageContext";
+import { useOfficerStore } from "../../lib/store/useOfficerStore";
 import { ShieldCheck, Phone, ShieldX } from "lucide-react";
 
 export default function LoginPage() {

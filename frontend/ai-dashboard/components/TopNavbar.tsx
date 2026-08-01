@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Cpu, Bell, ShieldCheck } from "lucide-react";
-import { useAIStore } from "../store/useAIStore";
+import { useAIStore } from "../lib/store/useAIStore";
 
 export const TopNavbar: React.FC = () => {
   const { isDemoMode, toggleDemoMode } = useAIStore();

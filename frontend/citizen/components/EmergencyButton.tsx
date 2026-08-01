@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { AlertOctagon, ShieldAlert, X } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
-import { useGrievanceStore } from "../store/useGrievanceStore";
-import { useAuthStore } from "../store/useAuthStore";
+import { useLanguage } from "../lib/context/LanguageContext";
+import { useGrievanceStore } from "../lib/store/useGrievanceStore";
+import { useAuthStore } from "../lib/store/useAuthStore";
 
 export const EmergencyButton: React.FC = () => {
   const { t } = useLanguage();

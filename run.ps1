@@ -2,6 +2,10 @@
 # CityMind AI Karnataka - Main Unified Runner
 # ====================================================
 
+# Stop any existing running servers in this workspace before starting new ones
+Write-Host "Stopping existing backend or portal server processes..." -ForegroundColor DarkYellow
+Get-CimInstance Win32_Process | Where-Object { $_.Name -match "node|python" -and $_.CommandLine -like "*SheCodes*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+
 Write-Host "Launching CityMind AI Karnataka services..." -ForegroundColor Cyan
 
 # 1. Start Consolidated Backend (Port 8080)
@@ -41,12 +45,13 @@ Write-Host "Officer Portal:       http://localhost:3002" -ForegroundColor Yellow
 Write-Host "Admin Portal:         http://localhost:3003" -ForegroundColor Yellow
 Write-Host "AI Dashboard:         http://localhost:3004" -ForegroundColor Yellow
 
-# Stay active in foreground for 10 minutes or until interrupted
-for ($i = 0; $i -lt 600; $i++) {
-    if ($api.HadErrors) { Write-Host "Warning: Backend reported errors!" -ForegroundColor Red }
-    if ($cit.HadErrors) { Write-Host "Warning: Citizen Portal reported errors!" -ForegroundColor Red }
-    if ($off.HadErrors) { Write-Host "Warning: Officer Portal reported errors!" -ForegroundColor Red }
-    if ($adm.HadErrors) { Write-Host "Warning: Admin Portal reported errors!" -ForegroundColor Red }
-    if ($aid.HadErrors) { Write-Host "Warning: AI Dashboard reported errors!" -ForegroundColor Red }
-    Start-Sleep -Seconds 1
+# Stay active in foreground until interrupted
+try {
+    while ($true) {
+        Start-Sleep -Seconds 2
+    }
+} finally {
+    # Clean up on exit
+    Write-Host "Stopping all backend and portal processes..." -ForegroundColor DarkYellow
+    Get-CimInstance Win32_Process | Where-Object { $_.Name -match "node|python" -and $_.CommandLine -like "*SheCodes*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 }

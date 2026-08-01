@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useOfficerStore } from "../store/useOfficerStore";
+import { useOfficerStore } from "../lib/store/useOfficerStore";
 
 export default function Home() {
   const router = useRouter();

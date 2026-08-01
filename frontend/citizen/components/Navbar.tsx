@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Bell, Globe, User, LogOut, Sun, HelpCircle } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
-import { useAccessibility } from "../context/AccessibilityContext";
-import { useAuthStore } from "../store/useAuthStore";
-import { useGrievanceStore } from "../store/useGrievanceStore";
+import { useLanguage } from "../lib/context/LanguageContext";
+import { useAccessibility } from "../lib/context/AccessibilityContext";
+import { useAuthStore } from "../lib/store/useAuthStore";
+import { useGrievanceStore } from "../lib/store/useGrievanceStore";
 import { NotificationPanel } from "./NotificationPanel";
 
 export const Navbar: React.FC = () => {

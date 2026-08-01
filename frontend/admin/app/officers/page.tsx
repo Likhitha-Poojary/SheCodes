@@ -2,8 +2,8 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "../../store/useAdminStore";
-import { useComplaintStore } from "../../store/useComplaintStore";
+import { useAdminStore } from "../../lib/store/useAdminStore";
+import { useComplaintStore } from "../../lib/store/useComplaintStore";
 import { OfficerTracker } from "../../components/OfficerTracker";
 
 export default function OfficersManagement() {

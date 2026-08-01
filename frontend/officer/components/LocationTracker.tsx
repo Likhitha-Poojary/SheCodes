@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useOfficerStore } from "../store/useOfficerStore";
+import { useOfficerStore } from "../lib/store/useOfficerStore";
 import { Navigation, Compass, BatteryCharging, ShieldAlert } from "lucide-react";
 
 export const LocationTracker: React.FC = () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Users, ShieldCheck, Clock, UserCheck } from "lucide-react";
-import { OfficerRecord } from "../store/useComplaintStore";
+import { OfficerRecord } from "../lib/store/useComplaintStore";
 
 interface OfficerTrackerProps {
   officers: OfficerRecord[];
