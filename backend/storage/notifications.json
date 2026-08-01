@@ -30,5 +30,21 @@
     "body": "You have been assigned complaint CMP872987.",
     "created_at": "2026-08-01 18:22:10",
     "deleted": false
+  },
+  {
+    "id": "3427b09d-c0df-4394-bd2b-e56ab6c8cfac",
+    "user_id": "7080beb6-f85d-4d9a-adf8-395023f1972a",
+    "title": "Officer Assigned",
+    "body": "Your complaint CMP061848 has been assigned.",
+    "created_at": "2026-08-01 18:53:38",
+    "deleted": false
+  },
+  {
+    "id": "e673101a-4238-4c03-80df-e7011c588913",
+    "user_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "title": "New Task Assigned",
+    "body": "You have been assigned complaint CMP061848.",
+    "created_at": "2026-08-01 18:53:38",
+    "deleted": false
   }
 ]

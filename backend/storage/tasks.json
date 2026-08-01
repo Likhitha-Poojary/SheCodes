@@ -7998,5 +7998,21 @@
     "distance": 1.5,
     "sla_deadline": "2026-08-03 18:22:10",
     "deleted": false
+  },
+  {
+    "id": "CMP061848",
+    "task_id": "TASK061866",
+    "complaint_id": "CMP061848",
+    "ticket_number": "CMP061848",
+    "description": "Open sewage block and overflowing water flooding main cross road near Market.",
+    "officer": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "assigned_officer_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "status": "Assigned",
+    "priority": "High",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "distance": 1.5,
+    "sla_deadline": "2026-08-03 18:53:38",
+    "deleted": false
   }
 ]

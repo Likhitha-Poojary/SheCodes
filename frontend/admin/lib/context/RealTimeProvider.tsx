@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useRef } from "react";
 import { useAdminStore } from "../store/useAdminStore";
 import { useComplaintStore } from "../store/useComplaintStore";
 
-const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws/grievances";
+const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/grievances";
 
 const RealTimeContext = createContext<null>(null);
 
