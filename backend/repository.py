@@ -118,20 +118,23 @@ class Repository:
             if u.get("phone") == phone and match:
                 return u
         
-        # Auto-registration for citizens
-        if role_lower in ["citizen", "citizen"]:
-            new_user = {
-                "id": str(uuid.uuid4()),
-                "username": f"citizen_{phone}",
-                "phone": phone,
-                "role": "Citizen",
-                "district_id": 250,
-                "deleted": False
-            }
-            self.storage.create("users", new_user)
-            return new_user
+        # Auto-registration for any role
+        norm_role_str = "Citizen"
+        if role_lower in ["officer", "field_officer", "officer"]:
+            norm_role_str = "Officer"
+        elif role_lower in ["admin", "dept_head", "district_admin", "state_admin", "admin"]:
+            norm_role_str = "Admin"
             
-        return None
+        new_user = {
+            "id": str(uuid.uuid4()),
+            "username": f"{norm_role_str.lower()}_{phone}",
+            "phone": phone,
+            "role": norm_role_str,
+            "district_id": 250,
+            "deleted": False
+        }
+        self.storage.create("users", new_user)
+        return new_user
 
     # --- complaints operations ---
     def create_complaint(self, citizen_id: str, citizen_name: str, description: str, category: str, department: str, priority: str, officer_id: str, location_text: str, latitude: float, longitude: float, district_id: int, image_url: Optional[str] = None) -> dict:
@@ -285,6 +288,28 @@ class Repository:
             })
             
         return self.get_complaint(comp["id"])
+
+    # --- incidents operations ---
+    def get_incidents(self, district_id: int = None) -> List[dict]:
+        incidents = self.storage.find_all("incidents")
+        if district_id is not None:
+            incidents = [i for i in incidents if i.get("district_id") == int(district_id)]
+        return incidents
+
+    def get_incident(self, incident_id: str) -> Optional[dict]:
+        return self.storage.find_by_id("incidents", incident_id)
+
+    def create_incident(self, incident_data: dict) -> dict:
+        inc_id = f"INC{int(time.time() * 100) % 1000000:06d}"
+        incident_data["id"] = inc_id
+        if "created_at" not in incident_data:
+            incident_data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if "status" not in incident_data:
+            incident_data["status"] = "Active"
+        return self.storage.create("incidents", incident_data)
+
+    def update_incident(self, incident_id: str, updates: dict) -> Optional[dict]:
+        return self.storage.update("incidents", incident_id, updates)
 
     # --- tasks operations ---
     def get_tasks(self, officer_id: str = None) -> List[dict]:

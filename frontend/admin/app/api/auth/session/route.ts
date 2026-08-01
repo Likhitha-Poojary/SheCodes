@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const payload = jwt.verify(token, JWT_SECRET) as any;
     
     // RBAC Security validation: Only supervisor and administrator roles
-    const adminRoles = ["SUPER_ADMIN", "DISTRICT_COMMISSIONER", "DEPARTMENT_HEAD", "WARD_SUPERVISOR", "FIELD_SUPERVISOR"];
+    const adminRoles = ["SUPER_ADMIN", "DISTRICT_COMMISSIONER", "DEPARTMENT_HEAD", "DEPT_HEAD", "WARD_SUPERVISOR", "FIELD_SUPERVISOR", "ADMIN"];
     if (!adminRoles.includes(payload.role)) {
       return NextResponse.json(
         { status: "error", error: { detail: "Forbidden: Access restricted to command personnel." } },

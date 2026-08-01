@@ -22,14 +22,91 @@
     "deleted": false
   },
   {
-    "id": "CMP061848",
-    "complaint_id": "CMP061848",
-    "category": "ROAD_POTHOLE",
-    "priority": "High",
+    "id": "CMP984870",
+    "complaint_id": "CMP984870",
+    "category": "Road damage",
+    "priority": "MEDIUM",
     "severity": "Medium",
-    "department": "BBMP",
+    "department": "Public Works",
+    "confidence": 0.9,
+    "created_at": "2026-08-01 21:27:29",
+    "deleted": false
+  },
+  {
+    "id": "CMP985109",
+    "complaint_id": "CMP985109",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:31",
+    "deleted": false
+  },
+  {
+    "id": "CMP985341",
+    "complaint_id": "CMP985341",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:33",
+    "deleted": false
+  },
+  {
+    "id": "CMP985581",
+    "complaint_id": "CMP985581",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:36",
+    "deleted": false
+  },
+  {
+    "id": "CMP985813",
+    "complaint_id": "CMP985813",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:38",
+    "deleted": false
+  },
+  {
+    "id": "CMP986033",
+    "complaint_id": "CMP986033",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:40",
+    "deleted": false
+  },
+  {
+    "id": "CMP986259",
+    "complaint_id": "CMP986259",
+    "category": "Flood",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Disaster Management",
+    "confidence": 0.92,
+    "created_at": "2026-08-01 21:27:42",
+    "deleted": false
+  },
+  {
+    "id": "CMP986482",
+    "complaint_id": "CMP986482",
+    "category": "Fire",
+    "priority": "CRITICAL",
+    "severity": "Medium",
+    "department": "Fire Department",
     "confidence": 0.95,
-    "created_at": "2026-08-01 18:53:38",
+    "created_at": "2026-08-01 21:27:45",
     "deleted": false
   }
 ]

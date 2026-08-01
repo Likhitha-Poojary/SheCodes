@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       const resp = await fetch(`${BACKEND_URL}/api/v1/auth/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone_number: phone, otp_code: otp }),
+        body: JSON.stringify({ phone_number: phone, otp_code: otp, role: "Officer" }),
       });
       if (resp.ok) {
         const body = await resp.json();

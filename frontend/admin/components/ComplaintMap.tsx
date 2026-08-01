@@ -1,170 +1,30 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { useMapStore } from "../lib/store/useMapStore";
 import { ComplaintRecord, OfficerRecord } from "../lib/store/useComplaintStore";
-import { Map } from "lucide-react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { Map, Layers, Radio, Users } from "lucide-react";
 
-// Fix default leaflet marker icon URLs in Next.js
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+// Dynamically import Leaflet component to prevent SSR issues with 'window'
+const ComplaintMapInner = dynamic(() => import("./ComplaintMapInner"), { ssr: false });
 
 interface ComplaintMapProps {
-  complaints: ComplaintRecord[];
+  incidents: any[];
   officers: OfficerRecord[];
+  initialSelectedId?: string | null;
 }
 
-export const ComplaintMap: React.FC<ComplaintMapProps> = ({ complaints, officers }) => {
+export const ComplaintMap: React.FC<ComplaintMapProps> = ({ incidents, officers, initialSelectedId }) => {
   const { selectedLayer, setSelectedLayer } = useMapStore();
-  const [selectedPin, setSelectedPin] = useState<ComplaintRecord | null>(null);
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const markersGroupRef = useRef<L.LayerGroup | null>(null);
+  const [selectedPin, setSelectedPin] = useState<any | null>(null);
 
-  const defaultLat = 12.9716;
-  const defaultLng = 77.5946;
-
-  // Initialize Leaflet Map
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapInstanceRef.current) return;
-
-    const map = L.map(mapContainerRef.current, {
-      center: [defaultLat, defaultLng],
-      zoom: 12,
-      zoomControl: true,
-    });
-
-    mapInstanceRef.current = map;
-
-    const tileUrl = selectedLayer === "heatmap"
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : selectedLayer === "density"
-      ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-
-    const tileLayer = L.tileLayer(tileUrl, {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19,
-    }).addTo(map);
-
-    tileLayerRef.current = tileLayer;
-
-    const markersGroup = L.layerGroup().addTo(map);
-    markersGroupRef.current = markersGroup;
-
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, []);
-
-  // Update Tile Layer on Layer Switch
-  useEffect(() => {
-    if (!mapInstanceRef.current || !tileLayerRef.current) return;
-    
-    const tileUrl = selectedLayer === "heatmap"
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : selectedLayer === "density"
-      ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-
-    tileLayerRef.current.setUrl(tileUrl);
-  }, [selectedLayer]);
-
-  // Render Markers for Complaints and Officers
-  useEffect(() => {
-    if (!mapInstanceRef.current || !markersGroupRef.current) return;
-
-    const markersGroup = markersGroupRef.current;
-    markersGroup.clearLayers();
-
-    // 1. Render Complaint Pins
-    complaints.forEach((comp) => {
-      const lat = comp.latitude || defaultLat;
-      const lng = comp.longitude || defaultLng;
-
-      const prioColor = comp.priority === "CRITICAL" ? "#ef4444" : comp.priority === "HIGH" ? "#f97316" : "#3b82f6";
-      
-      const customIcon = L.divIcon({
-        className: "custom-div-icon",
-        html: `
-          <div style="
-            background-color: ${prioColor};
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            border: 2px solid white;
-            cursor: pointer;
-          ">🚨</div>
-        `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-      });
-
-      const marker = L.marker([lat, lng], { icon: customIcon });
-      marker.on("click", () => {
-        setSelectedPin(comp);
-      });
-
-      const popupHtml = `
-        <div style="font-family: sans-serif; font-size: 12px; max-width: 200px;">
-          <strong style="color: #1e293b;">${comp.ticket_number || comp.id}</strong>
-          <p style="margin: 4px 0; color: #475569;">${comp.description}</p>
-          <span style="font-weight: bold; color: ${prioColor};">Priority: ${comp.priority}</span>
-        </div>
-      `;
-      marker.bindPopup(popupHtml);
-      markersGroup.addLayer(marker);
-    });
-
-    // 2. Render Officer Pins
-    officers.forEach((off) => {
-      const lat = off.latitude || defaultLat + 0.005;
-      const lng = off.longitude || defaultLng + 0.005;
-
-      const customIcon = L.divIcon({
-        className: "custom-div-icon",
-        html: `
-          <div style="
-            background-color: #4f46e5;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 2px solid #818cf8;
-          ">👷</div>
-        `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-      });
-
-      const marker = L.marker([lat, lng], { icon: customIcon });
-      marker.bindPopup(`<strong>${off.name}</strong><br/>Status: ${off.status}`);
-      markersGroup.addLayer(marker);
-    });
-
-  }, [complaints, officers]);
+  React.useEffect(() => {
+    if (initialSelectedId && incidents.length > 0) {
+      const pin = incidents.find(i => i.id === initialSelectedId);
+      if (pin) setSelectedPin(pin);
+    }
+  }, [initialSelectedId, incidents]);
 
   return (
     <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-4">
@@ -194,29 +54,73 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({ complaints, officers
         </div>
       </div>
 
-      {/* Map Canvas Viewport */}
-      <div className="relative h-[480px] w-full rounded-2xl overflow-hidden border border-slate-200 z-0">
-        <div ref={mapContainerRef} className="w-full h-full z-0" />
+      {/* Map Canvas viewport */}
+      <div className="relative bg-slate-950 h-96 w-full rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
+        
+        {/* Layer: Heatmap Density circles (simulated if heatmap selected) */}
+        {selectedLayer === "heatmap" && (
+          <div className="absolute inset-0 pointer-events-none z-40">
+            <div className="absolute w-48 h-48 bg-red-600/30 blur-3xl rounded-full" style={{ top: "35%", left: "45%" }} />
+            <div className="absolute w-32 h-32 bg-orange-500/30 blur-2xl rounded-full" style={{ top: "60%", left: "30%" }} />
+          </div>
+        )}
+
+        <ComplaintMapInner 
+          incidents={incidents} 
+          officers={officers} 
+          selectedPin={selectedPin} 
+          setSelectedPin={setSelectedPin} 
+          selectedLayer={selectedLayer} 
+        />
 
         {/* Click details overlay panel */}
         {selectedPin && (
-          <div className="absolute bottom-4 left-4 right-4 z-[1000] bg-slate-900/95 backdrop-blur-sm border border-slate-800 rounded-2xl p-4 text-xs text-white max-w-sm shadow-2xl">
+          <div className="absolute bottom-4 left-4 right-4 bg-slate-900/95 backdrop-blur-sm border border-slate-800 rounded-2xl p-4 text-xs text-white max-w-sm z-50 shadow-2xl">
             <div className="flex justify-between items-start gap-3 mb-2">
               <div>
-                <span className="text-[10px] text-slate-400 font-mono font-bold block">{selectedPin.ticket_number}</span>
-                <h5 className="font-bold text-slate-100 mt-0.5 line-clamp-1">{selectedPin.description}</h5>
+                <span className="text-[10px] text-slate-400 font-mono font-bold block">Incident: {selectedPin.id.split("-")[0]}</span>
+                <h5 className="font-bold text-slate-100 mt-0.5 line-clamp-1">{selectedPin.category}</h5>
               </div>
               <button 
                 onClick={() => setSelectedPin(null)} 
-                className="text-[9px] bg-slate-800 text-slate-400 px-2 py-1 rounded font-bold hover:bg-slate-700"
+                className="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded hover:bg-slate-700"
               >
                 Close
               </button>
             </div>
-            <p className="text-slate-300 truncate mb-2">📍 {selectedPin.location_text || "Bengaluru Division"}</p>
+            
+            <p className="text-slate-300 truncate mb-2">📍 {selectedPin.location}</p>
+            
+            <div className="space-y-1 mb-3 text-[10px] font-medium text-slate-300">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Related complaints:</span>
+                <span>{selectedPin.reports}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Trend:</span>
+                <span className={
+                  selectedPin.trend === "RAPIDLY INCREASING" ? "text-red-400 font-bold" :
+                  selectedPin.trend === "INCREASING" ? "text-orange-400" : "text-green-400"
+                }>{selectedPin.trend}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Assigned officer:</span>
+                <span>{selectedPin.officer_id ? "Assigned" : "Unassigned"}</span>
+              </div>
+            </div>
+            
+            <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700 mb-3 text-[10px]">
+              <span className="text-indigo-400 font-bold mb-1 block">RECOMMENDED ACTION:</span>
+              <ul className="list-disc pl-3 text-slate-300 space-y-0.5">
+                {(selectedPin.recommended_actions || []).map((rec: string, i: number) => (
+                  <li key={i}>{rec}</li>
+                ))}
+              </ul>
+            </div>
+
             <div className="flex items-center justify-between text-[10px] border-t border-slate-800 pt-2 font-bold text-slate-400">
-              <span>Status: <span className="text-orange-400">{selectedPin.status}</span></span>
-              <span>Priority: <span className="text-red-400">{selectedPin.priority}</span></span>
+              <span>Status: <span className="text-orange-400">{selectedPin.status || "OPEN"}</span></span>
+              <span>Priority: <span className={selectedPin.priority === "CRITICAL" ? "text-red-400" : "text-orange-400"}>{selectedPin.priority} ({selectedPin.priority_score})</span></span>
             </div>
           </div>
         )}

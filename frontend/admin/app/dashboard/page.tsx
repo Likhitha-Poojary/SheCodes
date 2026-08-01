@@ -59,6 +59,25 @@ export default function AdminDashboard() {
         )}
       </div>
 
+      {/* BIG REDIRECT BANNER TO THE NEW AI SYSTEM */}
+      <div 
+        onClick={() => router.push("/analytics")}
+        className="bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-colors p-6 rounded-3xl shadow-lg flex items-center justify-between text-white"
+      >
+        <div>
+          <h3 className="text-xl font-black flex items-center gap-2">
+            <AlertOctagon className="w-6 h-6 text-indigo-200" />
+            NEW: AI EMERGENCY PRIORITY CENTER IS LIVE!
+          </h3>
+          <p className="text-indigo-100 text-sm mt-1 font-medium">
+            The AI Intelligence Center has been fully upgraded to handle real-time priority clustering, trend detection, and emergency dispatch.
+          </p>
+        </div>
+        <button className="bg-white text-indigo-700 font-black px-6 py-3 rounded-xl whitespace-nowrap hover:bg-indigo-50">
+          VIEW AI TRIAGE QUEUE →
+        </button>
+      </div>
+
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <KPIcard

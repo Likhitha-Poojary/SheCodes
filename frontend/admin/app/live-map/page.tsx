@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAdminStore } from "../../lib/store/useAdminStore";
 import { useComplaintStore } from "../../lib/store/useComplaintStore";
 import dynamic from "next/dynamic";
@@ -11,21 +11,38 @@ const ComplaintMap = dynamic(
   { ssr: false }
 );
 
-export default function LiveMapScreen() {
+function LiveMapContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { verifySession } = useAdminStore();
-  const { complaints, officers, fetchComplaints } = useComplaintStore();
+  const { officers } = useComplaintStore();
+  const [incidents, setIncidents] = useState<any[]>([]);
+  const highlightId = searchParams.get('id');
 
   useEffect(() => {
     verifySession().then(() => {
       if (!useAdminStore.getState().isAuthenticated) {
         router.push("/login");
-      } else {
-        const u = useAdminStore.getState().user;
-        if (u) fetchComplaints(u.role, u.district_id ? String(u.district_id) : null);
       }
     });
-  }, [router, verifySession, fetchComplaints]);
+  }, [router, verifySession]);
+
+  useEffect(() => {
+    const fetchIncidents = async () => {
+      try {
+        const resp = await fetch("http://localhost:8080/incidents");
+        if (resp.ok) {
+          const json = await resp.json();
+          setIncidents(json.data || []);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchIncidents();
+    const interval = setInterval(fetchIncidents, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
@@ -36,11 +53,20 @@ export default function LiveMapScreen() {
       </div>
 
       <ComplaintMap
-        complaints={complaints}
+        incidents={incidents}
         officers={officers}
+        initialSelectedId={highlightId}
       />
 
     </div>
+  );
+}
+
+export default function LiveMapScreen() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Loading map...</div>}>
+      <LiveMapContent />
+    </Suspense>
   );
 }
 export type int = number;
