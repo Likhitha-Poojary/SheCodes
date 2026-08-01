@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
+const PRIMARY_BACKEND = process.env.BACKEND_URL || "http://localhost:8080";
+const SECONDARY_BACKEND = "http://127.0.0.1:8080";
+const JWT_SECRET = process.env.JWT_SECRET || "super-secret-karnataka-citymind-key-18273";
+
+async function safeFetchBackend(path: string, options: RequestInit) {
+  try {
+    const resp = await fetch(`${PRIMARY_BACKEND}${path}`, options);
+    if (resp.ok) return resp;
+  } catch (e) {
+    // Try secondary backend
+  }
+  return await fetch(`${SECONDARY_BACKEND}${path}`, options);
+}
 
 export async function GET(request: NextRequest) {
   let token = request.cookies.get("citymind_session")?.value;
@@ -16,7 +28,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const resp = await fetch(`${BACKEND_URL}/complaints`, {
+    const resp = await safeFetchBackend("/complaints", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`
@@ -49,7 +61,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const resp = await fetch(`${BACKEND_URL}/complaints`, {
+    const resp = await safeFetchBackend("/complaints", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

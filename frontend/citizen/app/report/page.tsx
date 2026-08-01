@@ -379,6 +379,12 @@ export default function ReportGrievance() {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
+        // Persist fallback record directly to backend database
+        fetch("http://localhost:8080/complaints", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description, latitude: lat, longitude: lon, location_text: "Incident location", category_id: categoryID })
+        }).catch(() => {});
         addGrievance(fallbackRecord);
         updateSubmittedData(fallbackRecord);
       }
@@ -404,6 +410,12 @@ export default function ReportGrievance() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+      // Persist fallback record directly to backend database
+      fetch("http://localhost:8080/complaints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description, latitude: lat, longitude: lon, location_text: "Incident location", category_id: categoryID })
+      }).catch(() => {});
       addGrievance(fallbackRecord);
       updateSubmittedData(fallbackRecord);
     }

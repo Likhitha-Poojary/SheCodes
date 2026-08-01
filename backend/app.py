@@ -52,7 +52,7 @@ class OtpVerifyRequest(BaseModel):
     role: str = None
 
 class ComplaintCreateRequest(BaseModel):
-    description: str
+    description: str = "Civic grievance reported by citizen"
     latitude: Optional[float] = 12.9716
     longitude: Optional[float] = 77.5946
     location_coordinate: Optional[Dict[str, float]] = None # support front-end nested coordinates
