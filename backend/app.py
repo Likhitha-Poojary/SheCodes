@@ -148,13 +148,12 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     priority = req.priority or ai.predict_priority(category, req.description, req.image_url)
     dept = ai.assign_department(category, lat, lon)
     
-    # 2. Find default officer (Shiva Gowda / OFF001)
-    officers = repo.storage.find_all("officers")
-    officer_id = "2f8dfb2c-63b1-419b-a010-09ab02c1d888" # Default
-    if officers:
-        officer_id = officers[0]["id"]
-        
-    # 3. Save complaint using repository
+    # 2. Duplicate check
+    all_comps = repo.get_complaints()
+    duplicate_record = ai.find_duplicate(req.description, all_comps)
+    is_duplicate = duplicate_record is not None
+
+    # 3. Save complaint using repository (Created as PENDING/SUBMITTED until Admin assigns an officer)
     comp = repo.create_complaint(
         citizen_id=current_user.user_id,
         citizen_name=current_user.username,
@@ -162,13 +161,14 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         category=category,
         department=dept,
         priority=priority,
-        officer_id=officer_id if not validation["duplicate"] else None,
+        officer_id=None,
         location_text=req.location_text or "Karnataka",
         latitude=lat,
         longitude=lon,
         district_id=current_user.district_id or 250,
         image_url=req.image_url
     )
+    officer_id = None
     
     # 4. Save AI Analysis
     ai_data = {
