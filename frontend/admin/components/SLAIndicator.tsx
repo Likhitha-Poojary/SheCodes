@@ -7,7 +7,8 @@ interface SLAIndicatorProps {
 }
 
 export const SLAIndicator: React.FC<SLAIndicatorProps> = ({ deadlineIso, status }) => {
-  const deadline = new Date(deadlineIso).getTime();
+  const parsedTime = deadlineIso ? new Date(deadlineIso).getTime() : NaN;
+  const deadline = isNaN(parsedTime) ? Date.now() + 86400000 : parsedTime;
   const now = Date.now();
   const diff = deadline - now;
 

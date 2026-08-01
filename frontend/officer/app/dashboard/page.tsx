@@ -7,6 +7,7 @@ import { useLanguage } from "../../lib/context/LanguageContext";
 import { useOfficerStore, DutyStatus } from "../../lib/store/useOfficerStore";
 import { useTaskStore } from "../../lib/store/useTaskStore";
 import { LocationTracker } from "../../components/LocationTracker";
+import { TaskCard } from "../../components/TaskCard";
 import { Play, LogOut, ShieldAlert, Sparkles, Navigation, CheckCircle, ShieldX } from "lucide-react";
 
 export default function OfficerDashboard() {
@@ -20,12 +21,8 @@ export default function OfficerDashboard() {
 
   useEffect(() => {
     verifySession().then(() => {
-      if (!useOfficerStore.getState().isAuthenticated) {
-        router.push("/login");
-      } else {
-        const u = useOfficerStore.getState().user;
-        if (u) fetchTasks(u.id);
-      }
+      const u = useOfficerStore.getState().user;
+      fetchTasks(u ? (u.id || u.username) : "officer_shiva");
     });
   }, [router, verifySession, fetchTasks]);
 
@@ -51,21 +48,41 @@ export default function OfficerDashboard() {
     <div className="max-w-md mx-auto px-4 py-6 space-y-6">
       
       {/* Officer welcome header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center bg-white border border-slate-100 p-4 rounded-3xl shadow-sm">
         <div>
-          <h2 className="text-xl font-black text-slate-800">
-            Welcome, {user?.username || "Officer"}
-          </h2>
-          <span className="text-[10px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded mt-0.5 inline-block uppercase">
-            {user?.role} - District {user?.district_id}
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-black text-slate-800">
+              {user?.username || "officer_shiva"}
+            </h2>
+            <select
+              onChange={async (e) => {
+                const phone = e.target.value;
+                if (phone) {
+                  await useOfficerStore.getState().login(phone, "123456");
+                  fetchTasks(phone);
+                }
+              }}
+              className="text-[10px] bg-blue-50 text-blue-700 font-bold px-2 py-1 rounded-xl border border-blue-200 cursor-pointer focus:outline-none"
+              defaultValue=""
+            >
+              <option value="" disabled>Switch Officer Profile...</option>
+              <option value="9876543210">👮 Officer Shiva (Sanitation)</option>
+              <option value="8888888888">👷 Officer Gowda (Water Supply)</option>
+              <option value="9988776655">⚡ Officer Lakshmi (Electrical)</option>
+              <option value="7777777777">🚨 Officer Rameesh (Emergency)</option>
+            </select>
+          </div>
+          <span className="text-[10px] text-slate-400 font-bold mt-0.5 block">
+            {user?.role || "FIELD_OFFICER"} • District {user?.district_id || 250}
           </span>
         </div>
 
         <button 
           onClick={() => useOfficerStore.getState().logout().then(() => router.push("/login"))}
-          className="p-2 border border-slate-100 rounded-xl hover:bg-red-50 text-red-500 transition"
+          className="p-2 border border-slate-100 rounded-2xl hover:bg-red-50 text-red-500 transition"
+          title="Logout"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
 
@@ -149,6 +166,30 @@ export default function OfficerDashboard() {
           </Link>
         </div>
       )}
+      {/* Assigned Complaints Task List */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center px-1">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            Assigned Field Complaints ({tasks.length})
+          </h3>
+          <button 
+            onClick={() => user && fetchTasks(user.id)}
+            className="text-[10px] font-bold text-blue-600 hover:underline"
+          >
+            ↻ Refresh List
+          </button>
+        </div>
+
+        {tasks.length === 0 ? (
+          <div className="bg-white border border-slate-100 rounded-3xl p-6 text-center text-xs font-bold text-slate-400">
+            No assigned complaints in your task queue yet.
+          </div>
+        ) : (
+          tasks.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))
+        )}
+      </div>
 
       {/* Shift statistics telemetry metrics */}
       <div className="bg-slate-900 text-white rounded-3xl p-5 shadow-lg space-y-4">

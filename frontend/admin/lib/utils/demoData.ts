@@ -71,11 +71,15 @@ const DEMO_OFFICERS: OfficerRecord[] = [
     id: "off-shiva",
     name: "Officer Shiva",
     phone: "+919876543210",
-    status: "ONLINE",
+    status: "AVAILABLE",
     latitude: 12.9722,
     longitude: 77.5952,
     tasks_completed: 18,
-    workload: 3
+    workload: 1,
+    department: "BBMP Sanitation",
+    avg_response_min: 12,
+    performance_score: 95,
+    eta: "6 mins (1.2 km)"
   },
   {
     id: "off-gowda",
@@ -85,17 +89,53 @@ const DEMO_OFFICERS: OfficerRecord[] = [
     latitude: 12.3060,
     longitude: 76.6560,
     tasks_completed: 24,
-    workload: 2
+    workload: 2,
+    department: "BWSSB Water Supply",
+    avg_response_min: 18,
+    performance_score: 91,
+    eta: "14 mins (2.8 km)"
+  },
+  {
+    id: "off-lakshmi",
+    name: "Officer Lakshmi",
+    phone: "+919988776655",
+    status: "BUSY",
+    latitude: 12.9352,
+    longitude: 77.6241,
+    tasks_completed: 31,
+    workload: 4,
+    department: "BESCOM Electrical",
+    avg_response_min: 22,
+    performance_score: 88,
+    eta: "25 mins (5.1 km)"
   },
   {
     id: "off-rameesh",
     name: "Officer Rameesh",
     phone: "+917777777777",
+    status: "EMERGENCY",
+    latitude: 12.9141,
+    longitude: 77.6413,
+    tasks_completed: 15,
+    workload: 3,
+    department: "Emergency Dispatches",
+    avg_response_min: 8,
+    performance_score: 97,
+    eta: "4 mins (0.7 km)"
+  },
+  {
+    id: "off-suresh",
+    name: "Officer Suresh",
+    phone: "+916655443322",
     status: "OFFLINE",
     latitude: 15.3648,
     longitude: 75.1243,
     tasks_completed: 12,
-    workload: 0
+    workload: 0,
+    department: "BBMP Sanitation",
+    avg_response_min: 28,
+    performance_score: 82,
+    eta: "Offline"
   }
 ];
 
