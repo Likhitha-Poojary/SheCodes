@@ -10,7 +10,7 @@ export const TopNavbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-slate-950 border-b border-slate-900 h-16 shadow-sm text-white">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="w-full px-6 h-16 flex items-center justify-between">
         
         {/* Brand */}
         <div className="flex items-center gap-3">

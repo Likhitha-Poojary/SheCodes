@@ -124,6 +124,7 @@ export default function TaskDetails() {
         confidence={activeTask.ai_confidence}
         severity={activeTask.severity}
         recommendedAction="Locate pipe burst on-site. Shut off main supply line valve. Repair pipeline leak. Inspect walking path cleanups."
+        aiAnalysis={(activeTask as any).ai_analysis}
       />
 
       {/* Geolocation navigation */}

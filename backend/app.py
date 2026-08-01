@@ -2,6 +2,7 @@ import os
 import shutil
 import uuid
 import logging
+import random
 from typing import Optional, Dict, List
 from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect, UploadFile, File, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -56,6 +57,8 @@ class ComplaintCreateRequest(BaseModel):
     location_coordinate: Optional[Dict[str, float]] = None # support front-end nested coordinates
     location_text: Optional[str] = "Incident Location"
     category_id: Optional[str] = None
+    priority: Optional[str] = None
+    image_url: Optional[str] = None
 
 class ComplaintUpdateRequest(BaseModel):
     status: Optional[str] = None
@@ -123,10 +126,27 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         lat = req.location_coordinate.get("latitude", lat)
         lon = req.location_coordinate.get("longitude", lon)
         
-    # 1. Local AI classification & prediction
-    category, confidence = ai.classify(req.description)
-    priority = ai.predict_priority(category, req.description)
-    dept = ai.assign_department(category)
+    # Decode base64 image if present
+    image_bytes = None
+    if req.image_url and req.image_url.startswith("data:image/"):
+        try:
+            import base64
+            header, encoded = req.image_url.split(",", 1)
+            image_bytes = base64.b64decode(encoded)
+        except Exception:
+            pass
+
+    # Run AI validation using SigLIP + ST
+    validation = ai.validate_complaint(
+        selected_category=req.category,
+        description=req.description,
+        image=image_bytes
+    )
+
+    category = validation["text_prediction"]
+    confidence = validation["text_confidence"]
+    priority = req.priority or ai.predict_priority(category, req.description, req.image_url)
+    dept = ai.assign_department(category, lat, lon)
     
     # 2. Find default officer (Shiva Gowda / OFF001)
     officers = repo.storage.find_all("officers")
@@ -134,11 +154,7 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     if officers:
         officer_id = officers[0]["id"]
         
-    # 3. Duplicate check
-    all_comps = repo.get_complaints()
-    is_duplicate = ai.find_duplicate(req.description, all_comps)
-    
-    # 4. Save complaint using repository
+    # 3. Save complaint using repository
     comp = repo.create_complaint(
         citizen_id=current_user.user_id,
         citizen_name=current_user.username,
@@ -146,27 +162,33 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         category=category,
         department=dept,
         priority=priority,
-        officer_id=officer_id if not is_duplicate else None,
+        officer_id=officer_id if not validation["duplicate"] else None,
         location_text=req.location_text or "Karnataka",
         latitude=lat,
         longitude=lon,
-        district_id=current_user.district_id or 250
+        district_id=current_user.district_id or 250,
+        image_url=req.image_url
     )
     
-    # 5. Save AI Analysis
+    # 4. Save AI Analysis
     ai_data = {
-        "category": category,
+        "selected_category": req.category,
+        "predicted_text_category": category,
+        "predicted_image_category": validation["image_prediction"],
+        "text_confidence": confidence,
+        "image_confidence": validation["image_confidence"],
+        "validation_status": validation["validation_status"],
+        "duplicate_found": validation["duplicate"],
+        "duplicate_id": validation["duplicate_id"],
         "priority": priority,
-        "department": dept,
-        "confidence": confidence,
-        "is_duplicate": bool(is_duplicate)
+        "department": dept
     }
     repo.save_ai_analysis(comp["id"], ai_data)
     
-    # 6. Broadcast WS events
+    # 5. Broadcast WS events
     await ws_manager.broadcast_to_room(f"district:{comp['district_id']}", "complaint_created", comp)
     await ws_manager.broadcast_to_room(f"citizen:{current_user.user_id}", "complaint_created", comp)
-    if officer_id and not is_duplicate:
+    if officer_id and not validation["duplicate"]:
         await ws_manager.broadcast_to_room(f"officer:{officer_id}", "task_assigned", {"complaint_id": comp["id"]})
         
     return {"status": "success", "data": comp}
@@ -176,6 +198,125 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
 async def create_grievance_legacy(req: ComplaintCreateRequest, current_user: UserToken = Depends(get_current_user)):
     res = await create_complaint(req, current_user)
     return res
+
+class TriageRequest(BaseModel):
+    description: Optional[str] = ""
+    image_url: Optional[str] = None
+    image_name: Optional[str] = None
+    latitude: Optional[float] = 12.9716
+    longitude: Optional[float] = 77.5946
+
+@app.post("/api/v1/ai/triage")
+def triage_grievance(req: TriageRequest):
+    # Only validate sentence if description is substantial
+    if req.description and len(req.description) >= 10 and not ai.is_meaningful(req.description):
+        return {
+            "status": "error",
+            "error": {
+                "detail": "Not a proper sentence. Please describe the grievance clearly."
+            }
+        }
+    
+    desc_to_classify = req.description or "general inquiry"
+    category, confidence = ai.classify_text(desc_to_classify)
+    
+    detected_image_category = None
+    image_bytes = None
+    if req.image_url and req.image_url.startswith("data:image/"):
+        try:
+            import base64
+            header, encoded = req.image_url.split(",", 1)
+            image_bytes = base64.b64decode(encoded)
+            pred_img, img_conf = ai.classify_image(image_bytes)
+            detected_image_category = pred_img.upper().replace(" ", "_")
+        except Exception as e:
+            print("Failed to decode base64 image in triage:", e)
+            
+    # Fallback keyword matching
+    if not detected_image_category:
+        img_ref = req.image_name or req.image_url or ""
+        name_lower = img_ref.lower()
+        if "road" in name_lower or "pothole" in name_lower or "street" in name_lower or "crack" in name_lower:
+            detected_image_category = "ROAD_POTHOLE"
+        elif "water" in name_lower or "leak" in name_lower or "pipe" in name_lower or "drain" in name_lower or "flood" in name_lower:
+            detected_image_category = "WATER_PIPE_LEAK"
+        elif "light" in name_lower or "dark" in name_lower or "lamp" in name_lower:
+            detected_image_category = "STREETLIGHT_OUT"
+        elif "garbage" in name_lower or "trash" in name_lower or "waste" in name_lower or "dump" in name_lower or "refuse" in name_lower:
+            detected_image_category = "GARBAGE_DUMP"
+
+    priority = ai.predict_priority(category, desc_to_classify, req.image_name)
+    dept = ai.assign_department(category, req.latitude, req.longitude)
+    
+    eta = "3 days"
+    if priority == "HIGH":
+        eta = "24 hours"
+    elif priority == "MEDIUM":
+        eta = "2 days"
+    else:
+        eta = "5 days"
+        
+    return {
+        "status": "success",
+        "data": {
+            "category": category,
+            "priority": priority,
+            "department": dept,
+            "estimated_time": eta,
+            "confidence": confidence,
+            "detected_image_category": detected_image_category
+        }
+    }
+
+class ValidateComplaintRequest(BaseModel):
+    description: str
+    selected_category: str
+    image: Optional[str] = None
+
+@app.post("/validate-complaint")
+@app.post("/api/v1/ai/validate-complaint")
+def validate_complaint_api(req: ValidateComplaintRequest):
+    image_bytes = None
+    if req.image and req.image.startswith("data:image/"):
+        try:
+            import base64
+            header, encoded = req.image.split(",", 1)
+            image_bytes = base64.b64decode(encoded)
+        except Exception as e:
+            print("Failed to decode base64 image in validate:", e)
+            
+    result = ai.validate_complaint(
+        selected_category=req.selected_category,
+        description=req.description,
+        image=image_bytes
+    )
+    
+    # Log the validation result inside backend/storage/ai_analysis.json
+    try:
+        log_data = {
+            "selected_category": req.selected_category,
+            "predicted_text_category": result["text_prediction"],
+            "predicted_image_category": result["image_prediction"],
+            "text_confidence": result["text_confidence"],
+            "image_confidence": result["image_confidence"],
+            "validation_status": result["validation_status"],
+            "duplicate_found": result["duplicate"],
+            "duplicate_id": result["duplicate_id"]
+        }
+        temp_id = f"VAL-{random.randint(100000, 999999)}"
+        repo.save_ai_analysis(temp_id, log_data)
+    except Exception as e:
+        print("Error logging validation to ai_analysis.json:", e)
+        
+    return result
+
+@app.get("/api/v1/categories")
+def get_categories():
+    return ai.CATEGORIES
+
+@app.get("/api/v1/ai/report")
+def get_ai_report():
+    return ai.generate_ai_report()
 
 # 3. GET /complaints
 @app.get("/complaints")
@@ -198,6 +339,16 @@ def get_complaint(id: str, current_user: UserToken = Depends(get_current_user)):
     comp = repo.get_complaint(id)
     if not comp:
         raise HTTPException(status_code=404, detail="Complaint not found.")
+        
+    # Merge AI analysis logs dynamically
+    try:
+        analyses = repo.storage.find_all("ai_analysis")
+        analysis = next((a for a in analyses if str(a.get("complaint_id")) == str(comp["id"]) or str(a.get("id")) == str(comp["id"])), None)
+        if analysis:
+            comp["ai_analysis"] = analysis
+    except Exception as e:
+        print("Error fetching ai_analysis details:", e)
+        
     return {"status": "success", "data": comp}
 
 # Compatibility alias
