@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-karnataka-citymind-key-18273";
 
 export async function POST(request: NextRequest) {

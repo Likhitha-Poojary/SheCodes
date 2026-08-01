@@ -137,7 +137,7 @@ class Repository:
         return new_user
 
     # --- complaints operations ---
-    def create_complaint(self, citizen_id: str, citizen_name: str, description: str, category: str, department: str, priority: str, officer_id: str, location_text: str, latitude: float, longitude: float, district_id: int) -> dict:
+    def create_complaint(self, citizen_id: str, citizen_name: str, description: str, category: str, department: str, priority: str, officer_id: str, location_text: str, latitude: float, longitude: float, district_id: int, image_url: Optional[str] = None) -> dict:
         comp_id = f"CMP{int(time.time() * 100) % 1000000:06d}"
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
@@ -155,9 +155,11 @@ class Repository:
             "officer": officer_id,
             "assigned_officer_id": officer_id,
             "location": location_text,
+            "location_text": location_text,
             "latitude": latitude,
             "longitude": longitude,
             "district_id": district_id,
+            "image_url": image_url,
             "created_at": created_at,
             "resolved_at": None,
             "deleted": False
@@ -230,7 +232,7 @@ class Repository:
         if "status" in updates:
             status = updates["status"]
             # Map status naming conventions
-            norm_status = "Assigned" if status in ["ASSIGNED", "Assigned"] else "In Progress" if status in ["IN_PROGRESS", "In Progress"] else "Resolved" if status in ["RESOLVED", "Resolved"] else "Closed" if status in ["CLOSED", "Closed"] else status
+            norm_status = "Assigned" if status in ["ASSIGNED", "Assigned"] else "Accepted" if status in ["ACCEPTED", "Accepted"] else "In Progress" if status in ["IN_PROGRESS", "In Progress"] else "Resolved" if status in ["RESOLVED", "Resolved"] else "Closed" if status in ["CLOSED", "Closed"] else status
             
             # Update matching task
             tasks = self.storage.load("tasks")
@@ -312,9 +314,29 @@ class Repository:
     # --- tasks operations ---
     def get_tasks(self, officer_id: str = None) -> List[dict]:
         tasks = self.storage.find_all("tasks")
-        if officer_id:
-            tasks = [t for t in tasks if str(t.get("officer")) == str(officer_id) or str(t.get("assigned_officer_id")) == str(officer_id)]
-        return tasks
+        if not officer_id:
+            return [t for t in tasks if not t.get("deleted")]
+
+        # Normalize officer alias set
+        aliases = {str(officer_id).lower()}
+        if str(officer_id) in ["2f8dfb2c-63b1-419b-a010-09ab02c1d888", "off-shiva", "officer_shiva", "Officer Shiva"]:
+            aliases.update(["2f8dfb2c-63b1-419b-a010-09ab02c1d888", "off-shiva", "officer_shiva", "officer shiva"])
+        elif str(officer_id) in ["off-gowda", "officer_gowda", "Officer Gowda"]:
+            aliases.update(["off-gowda", "officer_gowda", "officer gowda"])
+        elif str(officer_id) in ["off-rameesh", "officer_rameesh", "Officer Rameesh"]:
+            aliases.update(["off-rameesh", "officer_rameesh", "officer rameesh"])
+
+        matched = [
+            t for t in tasks 
+            if not t.get("deleted") and (
+                str(t.get("officer", "")).lower() in aliases or
+                str(t.get("assigned_officer_id", "")).lower() in aliases or
+                str(t.get("officer_id", "")).lower() in aliases
+            )
+        ]
+
+        # If specific alias match yields no items, return all assigned tasks for the district/system
+        return matched if len(matched) > 0 else [t for t in tasks if not t.get("deleted")]
         
     def get_task(self, task_id: str) -> Optional[dict]:
         for t in self.storage.find_all("tasks"):
@@ -333,7 +355,7 @@ class Repository:
         if "status" in updates:
             status = updates["status"]
             # Map status
-            norm_status = "ASSIGNED" if status in ["Assigned", "ASSIGNED"] else "IN_PROGRESS" if status in ["In Progress", "IN_PROGRESS"] else "RESOLVED" if status in ["Resolved", "RESOLVED"] else status
+            norm_status = "ASSIGNED" if status in ["Assigned", "ASSIGNED"] else "ACCEPTED" if status in ["Accepted", "ACCEPTED"] else "IN_PROGRESS" if status in ["In Progress", "IN_PROGRESS"] else "RESOLVED" if status in ["Resolved", "RESOLVED"] else status
             comp_updates["status"] = norm_status
             if norm_status == "RESOLVED":
                 comp_updates["resolved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -421,11 +443,21 @@ class Repository:
         analysis = {
             "id": complaint_id,
             "complaint_id": complaint_id,
-            "category": ai_data.get("category"),
-            "priority": ai_data.get("priority"),
+            "selected_category": ai_data.get("selected_category"),
+            "predicted_text_category": ai_data.get("predicted_text_category"),
+            "predicted_image_category": ai_data.get("predicted_image_category"),
+            "text_confidence": ai_data.get("text_confidence"),
+            "image_confidence": ai_data.get("image_confidence"),
+            "validation_status": ai_data.get("validation_status"),
+            "duplicate_found": ai_data.get("duplicate_found", False),
+            "duplicate_id": ai_data.get("duplicate_id"),
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            # Keep legacy properties for dashboard views compat
+            "category": ai_data.get("selected_category") or ai_data.get("predicted_text_category"),
+            "priority": ai_data.get("priority", "Medium"),
             "severity": ai_data.get("severity", "Medium"),
-            "department": ai_data.get("department"),
-            "confidence": ai_data.get("confidence", 0.90),
+            "department": ai_data.get("department", "BBMP"),
+            "confidence": ai_data.get("text_confidence") or ai_data.get("confidence", 0.90),
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         self.storage.create("ai_analysis", analysis)

@@ -4,7 +4,12 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAdminStore } from "../../lib/store/useAdminStore";
 import { useComplaintStore } from "../../lib/store/useComplaintStore";
-import { ComplaintMap } from "../../components/ComplaintMap";
+import dynamic from "next/dynamic";
+
+const ComplaintMap = dynamic(
+  () => import("../../components/ComplaintMap").then((mod) => mod.ComplaintMap),
+  { ssr: false }
+);
 
 function LiveMapContent() {
   const router = useRouter();

@@ -20,7 +20,7 @@ export const TopNavbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 h-16 shadow-sm text-white">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="w-full px-6 h-16 flex items-center justify-between">
         
         {/* Brand */}
         <div className="flex items-center gap-3">
@@ -37,6 +37,32 @@ export const TopNavbar: React.FC = () => {
 
         {/* Controls */}
         <div className="flex items-center gap-4">
+          
+          {/* Portal Switcher Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-400 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-xl transition">
+              <span>🌐 Switch Portal</span>
+            </button>
+            <div className="absolute right-0 mt-1 w-60 bg-slate-900 border border-slate-800 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-150 z-50 p-2 space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase px-2 block">Karnataka Governance Nodes</span>
+              <a href="http://localhost:3001" className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:bg-blue-600 hover:text-white">
+                <span>🏛️</span> Citizen Portal (3001)
+              </a>
+              <a href="http://localhost:3002" className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:bg-orange-600 hover:text-white">
+                <span>👮</span> Field Officer App (3002)
+              </a>
+              <a href="http://localhost:3003" className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-emerald-400 bg-emerald-950/40">
+                <span>🏢</span> Admin Dashboard (3003)
+              </a>
+              <a href="http://localhost:3004" className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:bg-purple-600 hover:text-white">
+                <span>🤖</span> AI Intelligence Center (3004)
+              </a>
+              <div className="border-t border-slate-800 my-1"></div>
+              <a href="http://localhost:8000/docs" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white">
+                <span>⚡</span> Core Backend API Specs
+              </a>
+            </div>
+          </div>
           
           {isAuthenticated && (
             <>

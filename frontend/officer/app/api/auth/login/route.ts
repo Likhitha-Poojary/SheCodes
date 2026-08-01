@@ -1,22 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-karnataka-citymind-key-18273";
 
 export async function POST(request: NextRequest) {
   try {
     const { phone, otp } = await request.json();
 
-    // Default mock user profile (Field Officer Shiva)
-    let token = "";
+    const cleanPhone = (phone || "").replace(/\D/g, "");
+
+    // Dynamic resolution of officer profiles by phone number
+    let username = `officer_${cleanPhone}`;
+    let officerId = `off-${cleanPhone}`;
+    let department = "BBMP Sanitation & Public Health";
+
+    if (cleanPhone === "9876543210" || cleanPhone === "9876543211") {
+      username = "officer_shiva";
+      officerId = "2f8dfb2c-63b1-419b-a010-09ab02c1d888";
+      department = "BBMP Sanitation & Public Health";
+    } else if (cleanPhone === "8888888888") {
+      username = "officer_gowda";
+      officerId = "off-gowda";
+      department = "BWSSB Water Supply Division";
+    } else if (cleanPhone === "9988776655") {
+      username = "officer_lakshmi";
+      officerId = "off-lakshmi";
+      department = "BESCOM Electrical Operations";
+    } else if (cleanPhone === "7777777777") {
+      username = "officer_rameesh";
+      officerId = "off-rameesh";
+      department = "Emergency Response Command";
+    } else if (cleanPhone === "6655443322") {
+      username = "officer_suresh";
+      officerId = "off-suresh";
+      department = "BBMP Sanitation Zone 2";
+    }
+
     let user = {
-      id: "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
-      username: "officer_shiva",
-      phone: phone,
+      id: officerId,
+      username: username,
+      phone: phone || cleanPhone,
+      department: department,
       role: "FIELD_OFFICER",
       district_id: 250
     };
+
+    let token = "";
 
     try {
       const resp = await fetch(`${BACKEND_URL}/api/v1/auth/otp/verify`, {
@@ -26,21 +56,31 @@ export async function POST(request: NextRequest) {
       });
       if (resp.ok) {
         const body = await resp.json();
-        token = body.data.access_token;
-        user = body.data.user;
-      } else {
-        token = jwt.sign(
-          { sub: user.id, preferred_username: user.username, role: user.role, district_id: user.district_id },
-          JWT_SECRET,
-          { expiresIn: "1h" }
-        );
+        if (body?.data?.access_token) token = body.data.access_token;
+        if (body?.data?.user) {
+          user = {
+            ...user,
+            ...body.data.user,
+            phone: phone || body.data.user.phone
+          };
+        }
       }
     } catch {
-      // Mock JWT generation for local sandbox run
+      // Backend offline fallback
+    }
+
+    if (!token) {
       token = jwt.sign(
-        { sub: user.id, preferred_username: user.username, role: user.role, district_id: user.district_id },
+        { 
+          sub: user.id, 
+          preferred_username: user.username, 
+          phone: user.phone,
+          department: user.department,
+          role: user.role, 
+          district_id: user.district_id 
+        },
         JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "24h" }
       );
     }
 
@@ -53,7 +93,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600,
+      maxAge: 86400,
       path: "/"
     });
 
@@ -65,4 +105,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-export type int = number;

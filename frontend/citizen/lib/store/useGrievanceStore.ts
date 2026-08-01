@@ -75,7 +75,14 @@ export const useGrievanceStore = create<GrievanceState>((set, get) => ({
   fetchGrievanceById: async (id: string, districtId: number) => {
     if (get().isDemoMode) {
       const demoRecord = getDemoGrievanceById(id);
-      set({ activeGrievance: demoRecord || null });
+      set({ activeGrievance: demoRecord || null, isLoading: false });
+      return;
+    }
+
+    // Check local store first (for newly reported grievances)
+    const local = get().grievances.find((g) => g.id === id || g.ticket_number === id);
+    if (local) {
+      set({ activeGrievance: local, isLoading: false });
       return;
     }
 
@@ -84,10 +91,16 @@ export const useGrievanceStore = create<GrievanceState>((set, get) => ({
       const response = await fetch(`/api/grievances/${id}?district_id=${districtId}`);
       if (response.ok) {
         const result = await response.json();
-        set({ activeGrievance: result.data });
+        if (result.data) {
+          set({ activeGrievance: result.data });
+          return;
+        }
       }
+      const fallback = get().grievances.find((g) => g.id === id || g.ticket_number === id);
+      set({ activeGrievance: fallback || null });
     } catch {
-      // Fallback
+      const fallback = get().grievances.find((g) => g.id === id || g.ticket_number === id);
+      set({ activeGrievance: fallback || null });
     } finally {
       set({ isLoading: false });
     }

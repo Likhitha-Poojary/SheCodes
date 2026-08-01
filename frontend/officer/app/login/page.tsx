@@ -26,8 +26,8 @@ export default function LoginPage() {
 
   const handleGetOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length < 10) {
-      setErrorMsg("Please enter a valid 10-digit mobile number.");
+    if (phone.length < 10 || phone.startsWith("0")) {
+      setErrorMsg("Please enter a valid 10-digit mobile number (cannot start with 0).");
       return;
     }
     setErrorMsg("");
@@ -75,7 +75,7 @@ export default function LoginPage() {
                 <input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").replace(/^0+/, ""))}
                   maxLength={10}
                   placeholder={t("login.phone_placeholder")}
                   className="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-2xl text-sm font-semibold text-white focus:outline-none focus:border-orange-500 transition"
@@ -127,6 +127,51 @@ export default function LoginPage() {
             </div>
           </form>
         )}
+
+        {/* Quick Officer Switcher */}
+        <div className="mt-8 pt-6 border-t border-slate-700/60 space-y-3">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block text-center">
+            ⚡ Quick Officer Select & Login
+          </span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <button
+              type="button"
+              onClick={() => { setPhone("9876543210"); setOtp("123456"); setStep(2); }}
+              className="p-2.5 bg-slate-900 hover:bg-slate-950 border border-slate-700 rounded-xl text-left font-bold transition flex items-center justify-between"
+            >
+              <span>👮 Officer Shiva</span>
+              <span className="text-[10px] text-slate-500 font-mono">9876543210</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setPhone("8888888888"); setOtp("123456"); setStep(2); }}
+              className="p-2.5 bg-slate-900 hover:bg-slate-950 border border-slate-700 rounded-xl text-left font-bold transition flex items-center justify-between"
+            >
+              <span>👷 Officer Gowda</span>
+              <span className="text-[10px] text-slate-500 font-mono">8888888888</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setPhone("9988776655"); setOtp("123456"); setStep(2); }}
+              className="p-2.5 bg-slate-900 hover:bg-slate-950 border border-slate-700 rounded-xl text-left font-bold transition flex items-center justify-between"
+            >
+              <span>⚡ Officer Lakshmi</span>
+              <span className="text-[10px] text-slate-500 font-mono">9988776655</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setPhone("7777777777"); setOtp("123456"); setStep(2); }}
+              className="p-2.5 bg-slate-900 hover:bg-slate-950 border border-slate-700 rounded-xl text-left font-bold transition flex items-center justify-between"
+            >
+              <span>🚨 Officer Rameesh</span>
+              <span className="text-[10px] text-slate-500 font-mono">7777777777</span>
+            </button>
+          </div>
+        </div>
 
       </div>
     </div>

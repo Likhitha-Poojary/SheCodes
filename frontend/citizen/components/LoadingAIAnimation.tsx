@@ -13,9 +13,9 @@ export const LoadingAIAnimation: React.FC<LoadingAIAnimationProps> = ({ onComple
 
   const steps = [
     "Analyzing report description...",
-    "Running YOLOv8 computer vision photo validations...",
-    "Executing pgvector geographic coordinate similarity check...",
-    "Routing resolved ticket to BBMP/BWSSB queues..."
+    "Verifying attached photo...",
+    "Checking for similar reports nearby...",
+    "Routing ticket to the correct department..."
   ];
 
   useEffect(() => {
@@ -25,14 +25,22 @@ export const LoadingAIAnimation: React.FC<LoadingAIAnimationProps> = ({ onComple
           return prev + 1;
         } else {
           clearInterval(timer);
-          if (onComplete) onComplete();
           return prev;
         }
       });
-    }, 1500);
+    }, 1200);
 
     return () => clearInterval(timer);
-  }, [steps.length, onComplete]);
+  }, [steps.length]);
+
+  useEffect(() => {
+    if (step === steps.length - 1) {
+      const completionTimer = setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 600);
+      return () => clearTimeout(completionTimer);
+    }
+  }, [step, steps.length, onComplete]);
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4">

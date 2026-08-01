@@ -7,12 +7,14 @@ import { useComplaintStore } from "../../lib/store/useComplaintStore";
 import { KPIcard } from "../../components/KPIcard";
 import { ComplaintTable } from "../../components/ComplaintTable";
 import { AnalyticsChart } from "../../components/AnalyticsChart";
-import { FileSpreadsheet, Clock, AlertOctagon, CheckCircle } from "lucide-react";
+import { FileSpreadsheet, Clock, AlertOctagon, CheckCircle, Sparkles } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, verifySession } = useAdminStore();
   const { complaints, fetchComplaints, isDemoMode } = useComplaintStore();
+
+  const [aiReport, setAiReport] = React.useState<any | null>(null);
 
   useEffect(() => {
     verifySession().then(() => {
@@ -20,7 +22,13 @@ export default function AdminDashboard() {
         router.push("/login");
       } else {
         const u = useAdminStore.getState().user;
-        if (u) fetchComplaints(u.role, u.district_id ? String(u.district_id) : null);
+        if (u) {
+          fetchComplaints(u.role, u.district_id ? String(u.district_id) : null);
+          fetch("/api/ai/report")
+            .then((res) => res.json())
+            .then((data) => setAiReport(data))
+            .catch((err) => console.error("Error fetching AI report:", err));
+        }
       }
     });
   }, [router, verifySession, fetchComplaints]);
@@ -100,6 +108,81 @@ export default function AdminDashboard() {
           borderLeftClass="border-l-4 border-l-green-500"
         />
       </div>
+
+      {/* AI Validation Analytics Panel */}
+      {aiReport && (
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-6">
+          <div className="flex items-center gap-2 border-b border-slate-50 pb-3">
+            <Sparkles className="w-5 h-5 text-indigo-600 animate-pulse" />
+            <h3 className="text-base font-extrabold text-slate-800">SigLIP & SentenceTransformer Multimodal AI Analytics</h3>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <span className="text-[10px] text-gray-400 block font-bold uppercase tracking-wider mb-1">Total Verified</span>
+              <span className="text-2xl font-black text-slate-800">{aiReport.total_verified}</span>
+            </div>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <span className="text-[10px] text-gray-400 block font-bold uppercase tracking-wider mb-1">Image Accuracy</span>
+              <span className="text-2xl font-black text-green-600">{(aiReport.image_accuracy * 100).toFixed(0)}%</span>
+            </div>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <span className="text-[10px] text-gray-400 block font-bold uppercase tracking-wider mb-1">Text Accuracy</span>
+              <span className="text-2xl font-black text-blue-600">{(aiReport.text_accuracy * 100).toFixed(0)}%</span>
+            </div>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <span className="text-[10px] text-gray-400 block font-bold uppercase tracking-wider mb-1">Mismatched Images</span>
+              <span className="text-2xl font-black text-red-500">{aiReport.total_mismatched}</span>
+            </div>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 col-span-2 md:col-span-1">
+              <span className="text-[10px] text-gray-400 block font-bold uppercase tracking-wider mb-1">Duplicates Detected</span>
+              <span className="text-2xl font-black text-amber-600">{aiReport.total_duplicates}</span>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 pt-2">
+            {/* Confidence distribution */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">AI Confidence Distribution</h4>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex justify-between bg-slate-50 p-2.5 rounded-xl">
+                  <span className="text-gray-500">Excellent (>=90%):</span>
+                  <span className="font-mono font-bold text-slate-700">{aiReport.confidence_distribution.excellent}</span>
+                </div>
+                <div className="flex justify-between bg-slate-50 p-2.5 rounded-xl">
+                  <span className="text-gray-500">High (75-90%):</span>
+                  <span className="font-mono font-bold text-slate-700">{aiReport.confidence_distribution.high}</span>
+                </div>
+                <div className="flex justify-between bg-slate-50 p-2.5 rounded-xl">
+                  <span className="text-gray-500">Medium (50-75%):</span>
+                  <span className="font-mono font-bold text-slate-700">{aiReport.confidence_distribution.medium}</span>
+                </div>
+                <div className="flex justify-between bg-slate-50 p-2.5 rounded-xl">
+                  <span className="text-gray-500">Low (<50%):</span>
+                  <span className="font-mono font-bold text-slate-700">{aiReport.confidence_distribution.low}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Most common categories */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Most Common Categories</h4>
+              <div className="space-y-2 text-xs font-semibold">
+                {Object.entries(aiReport.most_common_categories).length > 0 ? (
+                  Object.entries(aiReport.most_common_categories).map(([cat, count]: any, idx) => (
+                    <div key={idx} className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                      <span className="text-slate-700 truncate max-w-[240px]">{cat}</span>
+                      <span className="font-mono bg-white border border-slate-100 px-2 py-0.5 rounded font-black text-slate-800">{count}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-xs italic text-left">No classification logs active.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-12 gap-8 items-start">
         {/* Left Column: Complaints Table */}

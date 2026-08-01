@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useOfficerStore } from "../lib/store/useOfficerStore";
-import { Navigation, Compass, BatteryCharging, ShieldAlert } from "lucide-react";
+import { Navigation as NavIcon, Compass, BatteryCharging, ShieldAlert } from "lucide-react";
 
 export const LocationTracker: React.FC = () => {
   const dutyStatus = useOfficerStore((state) => state.dutyStatus);
@@ -26,7 +26,7 @@ export const LocationTracker: React.FC = () => {
     <div className="bg-slate-900 text-white rounded-3xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-          <Navigation className="w-4 h-4 text-orange-500 animate-spin" />
+          <NavIcon className="w-4 h-4 text-orange-500 animate-spin" />
           <span>Telemetry Quality Monitor</span>
         </div>
         <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-black animate-pulse">

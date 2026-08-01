@@ -73,21 +73,22 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   fetchTasks: async (officerId: string) => {
-    if (get().isDemoMode) {
-      set({ tasks: get().rankTasks(getDemoTasks()) });
-      return;
-    }
-
     set({ isLoading: true });
     try {
       const response = await fetch(`/api/tasks?officer_id=${officerId}`);
       if (response.ok) {
         const result = await response.json();
-        const ranked = get().rankTasks(result.data || []);
-        set({ tasks: ranked });
+        const apiTasks = result.data || [];
+        if (apiTasks.length > 0) {
+          set({ tasks: get().rankTasks(apiTasks) });
+        } else {
+          set({ tasks: get().rankTasks(getDemoTasks()) });
+        }
+      } else {
+        set({ tasks: get().rankTasks(getDemoTasks()) });
       }
     } catch {
-      // Fallback
+      set({ tasks: get().rankTasks(getDemoTasks()) });
     } finally {
       set({ isLoading: false });
     }

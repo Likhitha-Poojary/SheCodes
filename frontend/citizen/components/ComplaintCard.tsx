@@ -11,7 +11,7 @@ interface ComplaintCardProps {
 
 export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
   const { t } = useLanguage();
-  const slaDate = new Date(complaint.sla_deadline).toLocaleDateString();
+  const slaDate = complaint.sla_deadline ? new Date(complaint.sla_deadline).toLocaleDateString() : "Within 48 Hours";
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between">
