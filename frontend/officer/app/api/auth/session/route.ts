@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   try {
     const payload = jwt.verify(token, JWT_SECRET) as any;
     
-    // RBAC Security validation: Only FIELD_OFFICER or SUPERVISOR role can access
+    // RBAC Security validation
     if (payload.role !== "FIELD_OFFICER" && payload.role !== "SUPERVISOR") {
       return NextResponse.json(
         { status: "error", error: { detail: "Forbidden: Access restricted to field operational roles." } },
@@ -24,11 +24,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const username = payload.preferred_username || "officer_field";
+    const department = payload.department || (
+      username.includes("gowda") ? "BWSSB Water Supply Division"
+      : username.includes("lakshmi") ? "BESCOM Electrical Operations"
+      : username.includes("rameesh") ? "Emergency Response Command"
+      : username.includes("suresh") ? "BBMP Sanitation Zone 2"
+      : "BBMP Sanitation & Public Health"
+    );
+
     const user = {
       id: payload.sub,
-      username: payload.preferred_username,
-      role: payload.role,
-      district_id: payload.district_id
+      username: username,
+      phone: payload.phone || "9876543210",
+      department: department,
+      role: payload.role || "FIELD_OFFICER",
+      district_id: payload.district_id || 250
     };
 
     return NextResponse.json({ status: "success", data: { user } });

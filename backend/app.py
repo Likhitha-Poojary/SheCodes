@@ -164,7 +164,7 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
     all_comps = repo.get_complaints()
     is_duplicate = ai.find_duplicate(req.description, all_comps)
     
-    # 4. Save complaint using repository
+    # 4. Save complaint using repository (Created as PENDING/SUBMITTED until Admin assigns an officer)
     comp = repo.create_complaint(
         citizen_id=current_user.user_id,
         citizen_name=current_user.username,
@@ -172,7 +172,7 @@ async def create_complaint(req: ComplaintCreateRequest, current_user: UserToken 
         category=category,
         department=dept,
         priority=priority,
-        officer_id=officer_id if not is_duplicate else None,
+        officer_id=None,
         location_text=req.location_text or "Karnataka",
         latitude=lat,
         longitude=lon,
