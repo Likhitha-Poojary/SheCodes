@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { MapPin, Clock, ArrowRight, ShieldAlert, Sparkles, CheckCircle2, Play, Check } from "lucide-react";
+import { MapPin, Clock, ArrowRight, ShieldAlert, Sparkles, CheckCircle2, Play, Check, Navigation as NavIcon } from "lucide-react";
 import { TaskRecord, useTaskStore } from "../lib/store/useTaskStore";
 import { PriorityBadge } from "./PriorityBadge";
 
@@ -83,44 +83,66 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
       {/* Workflow Action Buttons */}
       <div className="pt-2 space-y-2">
-        {(normStatus === "ASSIGNED" || normStatus === "SUBMITTED" || normStatus === "PENDING") && (
-          <button
-            disabled={isUpdating}
-            onClick={() => handleStatusChange("ACCEPTED")}
-            className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
+        <div className="grid grid-cols-2 gap-2">
+          {/* Navigate Button */}
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${task.latitude || 12.9716},${task.longitude || 77.5946}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-2xl border border-slate-200 transition flex items-center justify-center gap-1.5"
           >
-            <Check className="w-4 h-4" />
-            <span>Accept Task</span>
-          </button>
-        )}
+            <NavIcon className="w-3.5 h-3.5 text-blue-600" />
+            <span>Navigate GIS</span>
+          </a>
 
-        {normStatus === "ACCEPTED" && (
-          <button
-            disabled={isUpdating}
-            onClick={() => handleStatusChange("IN_PROGRESS")}
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
-          >
-            <Play className="w-4 h-4" />
-            <span>Start Work</span>
-          </button>
-        )}
+          {/* Dynamic Workflow State Button */}
+          {(normStatus === "ASSIGNED" || normStatus === "SUBMITTED" || normStatus === "PENDING") && (
+            <button
+              disabled={isUpdating}
+              onClick={async () => {
+                const { useOfficerStore } = await import("../lib/store/useOfficerStore");
+                useOfficerStore.getState().setDutyStatus("ON_DUTY");
+                await handleStatusChange("ACCEPTED");
+              }}
+              className="py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
+            >
+              <Check className="w-4 h-4" />
+              <span>Accept Task</span>
+            </button>
+          )}
 
-        {(normStatus === "IN_PROGRESS" || normStatus === "IN PROGRESS") && (
-          <button
-            disabled={isUpdating}
-            onClick={() => handleStatusChange("RESOLVED")}
-            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Mark as Resolved</span>
-          </button>
-        )}
+          {normStatus === "ACCEPTED" && (
+            <button
+              disabled={isUpdating}
+              onClick={() => handleStatusChange("IN_PROGRESS")}
+              className="py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
+            >
+              <Play className="w-4 h-4" />
+              <span>Start Work</span>
+            </button>
+          )}
 
-        {normStatus === "RESOLVED" && (
-          <div className="w-full py-2 bg-emerald-50 text-emerald-700 font-extrabold text-xs rounded-2xl text-center border border-emerald-200">
-            ✅ Task Completed & Resolved
-          </div>
-        )}
+          {(normStatus === "IN_PROGRESS" || normStatus === "IN PROGRESS") && (
+            <button
+              disabled={isUpdating}
+              onClick={async () => {
+                const { useOfficerStore } = await import("../lib/store/useOfficerStore");
+                useOfficerStore.getState().incrementComplaintsHandled();
+                await handleStatusChange("RESOLVED");
+              }}
+              className="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-2xl shadow-sm transition flex items-center justify-center gap-1.5"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Mark Resolved</span>
+            </button>
+          )}
+
+          {normStatus === "RESOLVED" && (
+            <div className="py-2 bg-emerald-50 text-emerald-700 font-extrabold text-xs rounded-2xl text-center border border-emerald-200 flex items-center justify-center">
+              ✅ Resolved
+            </div>
+          )}
+        </div>
 
         {/* Inspect details link */}
         <Link

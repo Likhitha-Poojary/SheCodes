@@ -121,37 +121,11 @@ export default function ReportGrievance() {
     const payload = {
       description,
       location_coordinate: { latitude: lat, longitude: lon },
+      latitude: lat,
+      longitude: lon,
       location_text: "Incident pinned coordinate location",
       category_id: categoryID
     };
-
-    if (isDemoMode) {
-      // Mock submit in demo mode
-      setTimeout(() => {
-        const mockID = `demo-${Date.now()}`;
-        const newRecord = {
-          id: mockID,
-          ticket_number: `KA-BLR-2026-000${Math.floor(Math.random() * 900 + 100)}`,
-          description,
-          status: "SUBMITTED",
-          priority: "HIGH",
-          severity: "65",
-          latitude: lat,
-          longitude: lon,
-          location_text: "Captured demo location coordinate",
-          district_id: 250,
-          ward_id: 121,
-          assigned_officer_id: null,
-          assigned_team_id: null,
-          sla_deadline: new Date(Date.now() + 172800000).toISOString(),
-          resolved_at: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        updateSubmittedData(newRecord);
-      }, 2000);
-      return;
-    }
 
     try {
       const resp = await fetch("/api/grievances", {
@@ -164,7 +138,9 @@ export default function ReportGrievance() {
       });
       if (resp.ok) {
         const res = await resp.json();
-        updateSubmittedData(res.data);
+        const createdData = res.data || res;
+        addGrievance(createdData);
+        updateSubmittedData(createdData);
       } else {
         const mockID = `CMP${Date.now()}`;
         const fallbackRecord = {
@@ -186,6 +162,7 @@ export default function ReportGrievance() {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
+        addGrievance(fallbackRecord);
         updateSubmittedData(fallbackRecord);
       }
     } catch (err) {
@@ -210,6 +187,7 @@ export default function ReportGrievance() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+      addGrievance(fallbackRecord);
       updateSubmittedData(fallbackRecord);
     }
   };

@@ -89,46 +89,37 @@ export const useComplaintStore = create<ComplaintState>((set, get) => ({
   },
 
   fetchComplaints: async (role: string, filterId: string | null) => {
-    if (get().isDemoMode) {
-      set({
-        complaints: getDemoComplaints(),
-        officers: getDemoOfficers(),
-        departments: getDemoDepartments()
-      });
-      return;
-    }
-
     set({ isLoading: true });
     try {
       const response = await fetch(`/api/complaints?role=${role}&filter_id=${filterId || ""}`);
       if (response.ok) {
         const result = await response.json();
         const raw = result.data || [];
-        if (raw.length > 0) {
-          const formatted = raw.map((c: any) => ({
-            ...c,
-            ticket_number: c.ticket_number || c.complaint_id || c.id,
-            location_text: c.location_text || c.location || "Karnataka",
-            sla_deadline: c.sla_deadline || new Date(Date.now() + 86400000).toISOString(),
-            status: (c.status || "SUBMITTED").toUpperCase() === "PENDING" ? "SUBMITTED" : (c.status || "SUBMITTED").toUpperCase(),
-            priority: (c.priority || "MEDIUM").toUpperCase()
-          }));
-          set({
-            complaints: formatted,
-            officers: getDemoOfficers(),
-            departments: getDemoDepartments()
-          });
-          return;
-        }
+        const formatted = raw.map((c: any) => ({
+          ...c,
+          ticket_number: c.ticket_number || c.complaint_id || c.id,
+          location_text: c.location_text || c.location || "Karnataka",
+          sla_deadline: c.sla_deadline || new Date(Date.now() + 86400000).toISOString(),
+          status: (c.status || "SUBMITTED").toUpperCase() === "PENDING" ? "SUBMITTED" : (c.status || "SUBMITTED").toUpperCase(),
+          priority: (c.priority || "MEDIUM").toUpperCase()
+        })).sort((a: any, b: any) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+
+        set({
+          complaints: formatted,
+          officers: getDemoOfficers(),
+          departments: getDemoDepartments()
+        });
+        return;
       }
       set({
-        complaints: getDemoComplaints(),
+        complaints: [],
         officers: getDemoOfficers(),
         departments: getDemoDepartments()
       });
-    } catch {
+    } catch (e) {
+      console.error("Error fetching complaints:", e);
       set({
-        complaints: getDemoComplaints(),
+        complaints: [],
         officers: getDemoOfficers(),
         departments: getDemoDepartments()
       });
