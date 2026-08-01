@@ -17,7 +17,7 @@ export default function AIDashboard() {
          try { token = JSON.parse(raw).state.token; } catch(e){}
       }
       
-      const resp = await fetch("http://localhost:8080/incidents", {
+      const resp = await fetch("http://localhost:8085/incidents", {
         headers: token ? { "Authorization": `Bearer ${token}` } : {}
       });
       if (resp.ok) {

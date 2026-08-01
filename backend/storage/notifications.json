@@ -142,5 +142,29 @@
     "body": "Please respond immediately to Ward 45. Priority: CRITICAL",
     "created_at": "2026-08-01 23:00:56",
     "deleted": false
+  },
+  {
+    "id": "57578362-dd36-485c-8bdd-e8e88f0ced4c",
+    "user_id": "9c8dfb2c-63b1-419b-a010-09ab02c1d9b3",
+    "title": "Officer Assigned",
+    "body": "Your complaint CMP064719 has been assigned.",
+    "created_at": "2026-08-02 03:14:08",
+    "deleted": false
+  },
+  {
+    "id": "edbfa8aa-91fe-40a2-8c97-585617963d98",
+    "user_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "title": "New Task Assigned",
+    "body": "You have been assigned complaint CMP064719.",
+    "created_at": "2026-08-02 03:14:08",
+    "deleted": false
+  },
+  {
+    "id": "ac29db36-b70c-4ba5-aed4-a88fe58a54a3",
+    "user_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "title": "🚨 CRITICAL PRIORITY",
+    "body": "New Flood incident at Incident pinned coordinate location.",
+    "created_at": "2026-08-02 03:14:08",
+    "deleted": false
   }
 ]

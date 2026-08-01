@@ -211,6 +211,7 @@ class Repository:
             comps = [c for c in comps if str(c.get("citizen_id")) == str(citizen_id)]
         if district_id is not None:
             comps = [c for c in comps if c.get("district_id") == int(district_id)]
+        comps.sort(key=lambda c: str(c.get("created_at", "")), reverse=True)
         return comps
         
     def get_complaint(self, complaint_id: str) -> Optional[dict]:

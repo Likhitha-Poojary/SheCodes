@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { UUID } from "crypto";
 
 export interface UserProfile {
   id: string;
@@ -7,6 +6,13 @@ export interface UserProfile {
   phone: string;
   role: string;
   district_id: number;
+  full_name?: string;
+  email?: string;
+  address?: string;
+  district?: string;
+  city?: string;
+  pin_code?: string;
+  photo_url?: string;
 }
 
 interface AuthState {
@@ -16,9 +22,10 @@ interface AuthState {
   login: (phone: string, otp: string) => Promise<boolean>;
   logout: () => Promise<void>;
   verifySession: () => Promise<void>;
+  updateProfile: (updatedData: Partial<UserProfile>) => Promise<boolean>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
   user: null,
   isLoading: false,
@@ -26,11 +33,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (phone: string, otp: string) => {
     set({ isLoading: true });
     try {
-      // Proxying via Next.js Route Handler /api/auth/login
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: json_stringify_safe({ phone, otp }),
+        body: JSON.stringify({ phone, otp }),
       });
 
       if (!response.ok) {
@@ -38,9 +44,23 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       const result = await response.json();
+      let user: UserProfile = result.data.user;
+
+      // Merge locally stored profile if present (Requirement 7)
+      if (typeof window !== "undefined" && user?.id) {
+        const stored = localStorage.getItem(`citymind_citizen_profile_${user.id}`);
+        if (stored) {
+          try {
+            user = { ...user, ...JSON.parse(stored) };
+          } catch (e) {
+            console.error("Error reading cached profile", e);
+          }
+        }
+      }
+
       set({
         isAuthenticated: true,
-        user: result.data.user,
+        user,
         isLoading: false,
       });
       return true;
@@ -54,6 +74,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } finally {
+      // Retain localStorage profile so it persists on next login (Requirement 7)
       set({ isAuthenticated: false, user: null });
     }
   },
@@ -63,7 +84,37 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await fetch("/api/auth/session");
       if (response.ok) {
         const result = await response.json();
-        set({ isAuthenticated: true, user: result.data.user });
+        let user: UserProfile = result.data.user;
+
+        // Merge locally stored profile if present (Requirement 7)
+        if (typeof window !== "undefined" && user?.id) {
+          const stored = localStorage.getItem(`citymind_citizen_profile_${user.id}`);
+          if (stored) {
+            try {
+              user = { ...user, ...JSON.parse(stored) };
+            } catch (e) {
+              console.error("Error reading cached profile", e);
+            }
+          }
+
+          // Check if there is a pending profile sync to sync with backend (Requirement 8)
+          const pendingSync = localStorage.getItem(`citymind_profile_sync_pending_${user.id}`);
+          if (pendingSync === "true") {
+            fetch("/api/auth/profile", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(user),
+            })
+              .then((res) => {
+                if (res.ok) {
+                  localStorage.removeItem(`citymind_profile_sync_pending_${user.id}`);
+                }
+              })
+              .catch(() => {});
+          }
+        }
+
+        set({ isAuthenticated: true, user });
       } else {
         set({ isAuthenticated: false, user: null });
       }
@@ -71,9 +122,43 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ isAuthenticated: false, user: null });
     }
   },
+
+  updateProfile: async (updatedData: Partial<UserProfile>) => {
+    const state = get();
+    if (!state.user) return false;
+
+    const mergedUser = { ...state.user, ...updatedData };
+    set({ user: mergedUser });
+
+    // Save locally immediately (Requirement 8)
+    if (typeof window !== "undefined" && mergedUser.id) {
+      localStorage.setItem(`citymind_citizen_profile_${mergedUser.id}`, JSON.stringify(mergedUser));
+    }
+
+    // Attempt backend save
+    try {
+      const res = await fetch("/api/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(mergedUser),
+      });
+
+      if (!res.ok) {
+        if (typeof window !== "undefined" && mergedUser.id) {
+          localStorage.setItem(`citymind_profile_sync_pending_${mergedUser.id}`, "true");
+        }
+      } else {
+        if (typeof window !== "undefined" && mergedUser.id) {
+          localStorage.removeItem(`citymind_profile_sync_pending_${mergedUser.id}`);
+        }
+      }
+    } catch {
+      if (typeof window !== "undefined" && mergedUser.id) {
+        localStorage.setItem(`citymind_profile_sync_pending_${mergedUser.id}`, "true");
+      }
+    }
+
+    return true;
+  },
 }));
 
-// Helper utility since JSON.stringify is standard but let's prevent errors
-function json_stringify_safe(obj: any) {
-  return JSON.stringify(obj);
-}

@@ -28,7 +28,7 @@ export default function AnalyticsScreen() {
 
   const fetchIncidents = async () => {
     try {
-      const resp = await fetch("http://localhost:8080/incidents");
+      const resp = await fetch("http://localhost:8085/incidents");
       if (resp.ok) {
         const json = await resp.json();
         setIncidents(json.data || []);
@@ -69,7 +69,7 @@ export default function AnalyticsScreen() {
     setNotifying(true);
     setNotifySuccess(false);
     try {
-      const resp = await fetch(`http://localhost:8080/incidents/${topIncident.id}/notify`, {
+      const resp = await fetch(`http://localhost:8085/incidents/${topIncident.id}/notify`, {
         method: "POST"
       });
       if (resp.ok) {

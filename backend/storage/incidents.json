@@ -9187,5 +9187,34 @@
     "created_at": "2026-08-01 22:12:20",
     "status": "Active",
     "deleted": false
+  },
+  {
+    "title": "Flood",
+    "category": "Flood",
+    "location": "Incident pinned coordinate location",
+    "latitude": 12.908942,
+    "longitude": 74.837524,
+    "district_id": 250,
+    "complaint_ids": [
+      "CMP064719"
+    ],
+    "reports": 1,
+    "trend": "NEW",
+    "priority_score": 92,
+    "priority": "CRITICAL",
+    "explanation": "Prioritized as CRITICAL because: 1 related report(s) detected. High intrinsic safety/infrastructure risk.",
+    "recommended_actions": [
+      "Immediate field assessment.",
+      "Assess rescue requirement.",
+      "Check affected roads for closure.",
+      "Check electrical hazards.",
+      "Consider traffic diversion."
+    ],
+    "department": "Disaster Management",
+    "officer_id": "2f8dfb2c-63b1-419b-a010-09ab02c1d888",
+    "id": "INC064853",
+    "created_at": "2026-08-02 03:14:08",
+    "status": "Active",
+    "deleted": false
   }
 ]

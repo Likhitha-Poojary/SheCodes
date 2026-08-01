@@ -107,6 +107,27 @@ def verify_otp(req: OtpVerifyRequest):
     if not user:
         raise HTTPException(status_code=404, detail="User profile not registered.")
         
+class ProfileUpdateRequest(BaseModel):
+    id: Optional[str] = None
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    district: Optional[str] = None
+    city: Optional[str] = None
+    pin_code: Optional[str] = None
+    photo_url: Optional[str] = None
+
+@app.put("/users/{user_id}")
+@app.put("/api/v1/user/profile")
+def update_user_profile(req: ProfileUpdateRequest, user_id: Optional[str] = None):
+    target_id = user_id or req.id or "9c8dfb2c-63b1-419b-a010-09ab02c1d9b3"
+    updates = {k: v for k, v in req.dict().items() if v is not None}
+    updated_user = repo.storage.update("users", target_id, updates)
+    if not updated_user:
+        updated_user = repo.storage.create("users", {"id": target_id, **updates})
+    return {"status": "success", "data": {"user": updated_user}}
+
     token = create_jwt(user["id"], user["username"], user["role"], user["phone"], user.get("district_id", 250))
     return {
         "status": "success",
